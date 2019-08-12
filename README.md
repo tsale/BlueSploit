@@ -38,4 +38,4 @@ Current stage of the project: <b>Pre-Alpha</b>
 
 <p><b><u><i>Disclaimer</i></u></b> 
  <br><br>
-<i>Comments,suggestions and constructive criticism are welcome. I am not a developer, I am an InfoSec analyst so any help with this project from all the developers(or good programmers) out there is very much appreciated.</i></p>
+<i>Comments,suggestions and constructive criticism are welcome. I am not a developer, I am an InfoSec analyst so any help with this project from all the developers(or hobbysist programmers) out there is very much appreciated.</i></p>
