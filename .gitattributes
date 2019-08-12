@@ -1,4 +1,4 @@
 * linguist-vendored
-*.py      linguist-detectable=true
-*.ps1     linguist-detectable=true
+*.py      linguist-vendored=false
+*.ps1     linguist-vendored=false
 
