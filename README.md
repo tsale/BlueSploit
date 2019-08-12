@@ -25,7 +25,13 @@ Current stage of the project: <b>Pre-Alpha</b>
 <em>And much more...</em><br><br>
 
 <p>Feel free to contribute! I will try to keep the code clean and easy to read.</p>
-<br> <br> <br> <br> 
+<br> <br> 
+
+<p><strong><span style="text-decoration: underline;">A big thanks to the below contributors of the felow InfoSec community:</span></strong></p>
+<ul>
+<li>DeepBlueCLI from Sans (<a href="https://github.com/sans-blue-team/DeepBlueCLI">https://github.com/sans-blue-team/DeepBlueCLI)</a></li>
+</ul>
+<br><br>
 
 
 <p><b><u><i>Disclaimer</i></u></b> 
