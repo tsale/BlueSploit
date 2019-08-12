@@ -1,4 +1,4 @@
 * linguist-vendored
-*.py linguist-vendored=false
+*.py      text
 *.ps1     text
 
