@@ -16,7 +16,7 @@ class Gather():
         subprocess.call("powershell.exe Get-LocalGroupMember -Group Administrators\n",shell=True)
         
     def deepBlue_security():
-        subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log security| Out-Host -Paging""",shell=True)
+        subprocess.call("powershell.exe DeepBlueCLI\DeepBlue.ps1 -log security",shell=True)
     
     def deepBlue_system():
         subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log security | Out-Host -Paging""",shell=True)
