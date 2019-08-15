@@ -4,14 +4,31 @@ from data import *
 from colorama import Fore, Back, Style, init
 import cmd2_submenu
 
+
+
+class Note_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'notes #> '
+
+    Notes = "Keep notes"
+
+
+    @cmd2.with_category(Notes)
+    def do_add_note(self,args):
+      write_csv()
+      
+    @cmd2.with_category(Notes)
+    def do_show_notes(self,args):
+      show_notes()
+    
+
 class Query_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Query #> '
-
-    
+   
     Query_WinEvents = "Query Windows events"
-
 
     @cmd2.with_category(Query_WinEvents)
     def do_check_deep_security(self,args):
@@ -46,6 +63,8 @@ class Gather_term(cmd2.Cmd):
     
 
 
+@cmd2_submenu.AddSubmenu(Note_term(),
+                         command='notes')
 @cmd2_submenu.AddSubmenu(Query_term(),
                          command='query')
 @cmd2_submenu.AddSubmenu(Gather_term(),
@@ -67,6 +86,8 @@ class BlueSploit(cmd2.Cmd):
 
     def do_list_modules(self,args):
       modules()
+    
+   
 
 
 
