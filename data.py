@@ -1,10 +1,14 @@
 import csv
 
 
+
 def modules():
-    mods = {'gather':'Gather Information','query':'Query Windows events'}
+    mods = {'gather':'Gather Information','query':'Query Windows events','network':'Show current network information'}
     for k,v in mods.items():
         print("{}\t=>\t\t{}".format(k,v))
+
+
+
 
 def write_csv():
     nlist = []
