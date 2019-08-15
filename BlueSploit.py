@@ -1,98 +1,44 @@
-import cmd2
-from Gather_info import *
-from data import *
-from colorama import Fore, Back, Style, init
-import cmd2_submenu
+import subprocess
+from colorama import Fore, Back, Style
 
+green = Fore.GREEN
+reset = Fore.RESET
 
-
-class Note_term(cmd2.Cmd):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.prompt = 'notes #> '
-
-    Notes = "Keep notes"
-
-
-    @cmd2.with_category(Notes)
-    def do_add_note(self,args):
-      write_csv()
-      
-    @cmd2.with_category(Notes)
-    def do_show_notes(self,args):
-      show_notes()
+class Gather():
+    def systeminfo():
+        print(green+"\n\tLocal System Information: \n"+reset)
+        sysinfo = subprocess.call("sysinternals\psinfo -accepteula -s -h -d",shell=True)
+        return(sysinfo)
     
-
-class Query_term(cmd2.Cmd):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.prompt = 'Query #> '
-   
-    Query_WinEvents = "Query Windows events"
-
-    @cmd2.with_category(Query_WinEvents)
-    def do_check_deep_security(self,args):
-        Gather.deepBlue_security()
-        
-    @cmd2.with_category(Query_WinEvents)
-    def do_check_deep_system(self,args):
-        Gather.deepBlue_system()        
-
-    @cmd2.with_category(Query_WinEvents)
-    def do_check_deep_powershell_snippet(self,args):
-        Gather.deepBlue_powershell_snippet() 
-
-
-
-class Gather_term(cmd2.Cmd):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.prompt = 'Gather #> '
-
-    gather_information = "Gather Information"
-
-    @cmd2.with_category(gather_information)
-    def do_gather_sysinfo(self,args):
-        """Gather system information"""
-        Gather.systeminfo()
-
-    @cmd2.with_category(gather_information)
-    def do_gather_local_usersinfo(self,args):
-        """Gather local user information"""
-        Gather.local_usersinfo()
+    def local_usersinfo():
+        print(green+"\n\tUsers Information: \n"+reset)        
+        userInfo = subprocess.call("wmic useraccount get name,SID,Status\n",shell=True)
+        print(green + "\n\tLocal Users and Administrators: " + reset)
+        localAdmins = subprocess.call("powershell.exe Get-LocalGroupMember -Group Administrators\n",shell=True)
+        return(userInfo,localAdmins)
     
-
-
-@cmd2_submenu.AddSubmenu(Note_term(),
-                         command='notes')
-@cmd2_submenu.AddSubmenu(Query_term(),
-                         command='query')
-@cmd2_submenu.AddSubmenu(Gather_term(),
-                         command='gather')
-class BlueSploit(cmd2.Cmd):
-    intro = cmd2.style(""" \n ______  _               _____         _         _  _   
-| ___ \| |             /  ___|       | |       (_)| |  
-| |_/ /| | _   _   ___ \ `--.  _ __  | |  ___   _ | |_ 
-| ___ \| || | | | / _ \ `--. \| '_ \ | | / _ \ | || __|
-| |_/ /| || |_| ||  __//\__/ /| |_) || || (_) || || |_ 
-\____/ |_| \__,_| \___|\____/ | .__/ |_| \___/ |_| \__|
-                              | |                      
-                              |_|                      
-
-  """,bold=True,fg="blue")
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.prompt = (Style.RESET_ALL + Style.BRIGHT  + Back.BLUE + "\nBlueSploit $> "+ Style.RESET_ALL +  Fore.GREEN)    
-
-    def do_list_modules(self,args):
-      modules()
     
-   
-
-
-
-
-
-if __name__ == '__main__':
-    app = BlueSploit()
-    app.cmdloop()
+class DeepBlue():    
+    def deepBlue_security():
+        security  = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log security| Out-Host -Paging""",shell=True)
+        return(security)
+    def deepBlue_system():
+        system = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log security | Out-Host -Paging""",shell=True)
+        return(system)
+    def deepBlue_powershell():
+        powershell = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log powershell | Out-Host -Paging""",shell=True)
+        return(powershell)
+    
+    
+class Network_checks():
+    def netstat_info():
+        info = subprocess.call("""powershell.exe "netstat -ant | select -skip 4 | ConvertFrom-String -PropertyNames none, proto,ipsrc,ipdst,state,state2,none,none | select ipsrc,ipdst,state" """,shell=True)
+        return(info)
+    def netstat_listening():    
+        listening_processes = subprocess.call("""powershell.exe "netstat -ano | findstr -i listening | ForEach-Object { $_ -split '\s+|\t+' } | findstr /r '^[1-9+]*$' | sort | unique | ForEach-Object { Get-Process -Id $_ } | Select ProcessName,Path,Company,Description" """,shell=True)
+        return(listening_processes) 
+    def dns_checks():  
+        dnsChecks = subprocess.call("""powershell.exe "Get-DnsClientCache -Status 'Success' | Select Name, Data" """,shell=True)
+        return(dnsChecks)
+    
+    
