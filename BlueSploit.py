@@ -1,44 +1,119 @@
-import subprocess
-from colorama import Fore, Back, Style
+import cmd2
+from Gather_info import *
+from data import *
+from colorama import Fore, Back, Style, init
+import cmd2_submenu
 
-green = Fore.GREEN
-reset = Fore.RESET
 
-class Gather():
-    def systeminfo():
-        print(green+"\n\tLocal System Information: \n"+reset)
-        sysinfo = subprocess.call("sysinternals\psinfo -accepteula -s -h -d",shell=True)
-        return(sysinfo)
+
+class Network_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'Network #> '
     
-    def local_usersinfo():
-        print(green+"\n\tUsers Information: \n"+reset)        
-        userInfo = subprocess.call("wmic useraccount get name,SID,Status\n",shell=True)
-        print(green + "\n\tLocal Users and Administrators: " + reset)
-        localAdmins = subprocess.call("powershell.exe Get-LocalGroupMember -Group Administrators\n",shell=True)
-        return(userInfo,localAdmins)
+    Network = "Network data information"
     
+    @cmd2.with_category(Network)
+    def do_netstat_info(self,args):  
+        Network_checks.netstat_info()
     
-class DeepBlue():    
-    def deepBlue_security():
-        security  = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log security| Out-Host -Paging""",shell=True)
-        return(security)
-    def deepBlue_system():
-        system = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log security | Out-Host -Paging""",shell=True)
-        return(system)
-    def deepBlue_powershell():
-        powershell = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log powershell | Out-Host -Paging""",shell=True)
-        return(powershell)
+    @cmd2.with_category(Network)
+    def do_netstat_listening(self,args):  
+        Network_checks.netstat_listening()
     
+    @cmd2.with_category(Network)
+    def do_dns_checks(self,args):  
+        Network_checks.dns_checks()        
+
+
+class Note_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'notes #> '
+
+    Notes = "Keep notes"
+
+
+    @cmd2.with_category(Notes)
+    def do_add_note(self,args):
+      write_csv()
+      
+    @cmd2.with_category(Notes)
+    def do_show_notes(self,args):
+      show_notes()
     
-class Network_checks():
-    def netstat_info():
-        info = subprocess.call("""powershell.exe "netstat -ant | select -skip 4 | ConvertFrom-String -PropertyNames none, proto,ipsrc,ipdst,state,state2,none,none | select ipsrc,ipdst,state" """,shell=True)
-        return(info)
-    def netstat_listening():    
-        listening_processes = subprocess.call("""powershell.exe "netstat -ano | findstr -i listening | ForEach-Object { $_ -split '\s+|\t+' } | findstr /r '^[1-9+]*$' | sort | unique | ForEach-Object { Get-Process -Id $_ } | Select ProcessName,Path,Company,Description" """,shell=True)
-        return(listening_processes) 
-    def dns_checks():  
-        dnsChecks = subprocess.call("""powershell.exe "Get-DnsClientCache -Status 'Success' | Select Name, Data" """,shell=True)
-        return(dnsChecks)
+
+class Query_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'Query #> '
+   
+    Query_WinEvents = "Query Windows events"
     
+    @cmd2.with_category(Query_WinEvents)
+    def do_check_deep_security(self,):
+        DeepBlue.deepBlue_security()
+        
+    @cmd2.with_category(Query_WinEvents)
+    def do_check_deep_system(self,args):
+        DeepBlue.deepBlue_system()        
+
+    @cmd2.with_category(Query_WinEvents)
+    def do_check_deep_powershell(self,args):
+        DeepBlue.deepBlue_powershell() 
+
+
+
+class Gather_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'Gather #> '
+
+    gather_information = "Gather Information"
+
+    @cmd2.with_category(gather_information)
+    def do_gather_sysinfo(self,args):
+        """Gather system information"""
+        Gather.systeminfo()
+
+    @cmd2.with_category(gather_information)
+    def do_gather_usersinfo(self,args):
+        """Gather local user information"""
+        Gather.local_usersinfo()
     
+
+@cmd2_submenu.AddSubmenu(Network_term(),
+                         command='network')
+@cmd2_submenu.AddSubmenu(Note_term(),
+                         command='notes')
+@cmd2_submenu.AddSubmenu(Query_term(),
+                         command='query')
+@cmd2_submenu.AddSubmenu(Gather_term(),
+                         command='gather')
+class BlueSploit(cmd2.Cmd):
+    intro = cmd2.style(""" \n ______  _               _____         _         _  _   
+| ___ \| |             /  ___|       | |       (_)| |  
+| |_/ /| | _   _   ___ \ `--.  _ __  | |  ___   _ | |_ 
+| ___ \| || | | | / _ \ `--. \| '_ \ | | / _ \ | || __|
+| |_/ /| || |_| ||  __//\__/ /| |_) || || (_) || || |_ 
+\____/ |_| \__,_| \___|\____/ | .__/ |_| \___/ |_| \__|
+                              | |                      
+                              |_|                      
+
+  """,bold=True,fg="blue")
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = (Style.RESET_ALL + Style.BRIGHT  + Back.BLUE + "\nBlueSploit $> "+ Style.RESET_ALL +  Fore.GREEN)    
+
+    def do_list_modules(self,args):
+      modules()
+    
+   
+
+
+
+
+
+if __name__ == '__main__':
+    app = BlueSploit()
+    app.cmdloop()
