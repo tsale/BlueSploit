@@ -1,7 +1,7 @@
 import csv
 import time
-import subprocess
 import socket
+import os
 
 
 def modules():
@@ -32,15 +32,18 @@ def show_notes():
             print(row)
             
             
-            
 class Files():
     def name_file(name):
-        timestr = time.strftime("%m-%d-%Y_")
+        timestr = time.strftime("%m-%d-%Y-")
         filename = socket.gethostname()
         inv_name = "Bluesploit_{time}{filename}_{module_name}".format(time=timestr,filename=filename,module_name=name)
         return(inv_name)
     
     def mk_file(name,*args):
-        f = open(Files.name_file(name), "w",newline='')   
+        filename = Files.name_file(name)
+        f = open("Investigations/{}/{}".format(Files.name_file(""),filename), "w",newline='')   
         f.write(*args)
         f.close()
+        
+
+os.makedirs("Investigations/{}".format(Files.name_file("")),exist_ok=True)
