@@ -7,7 +7,8 @@ import os
 def modules():
     mods = {'gather':'Gather Information',
             'query':'Query Windows events',
-            'network':'Show current network information'}
+            'network':'Show current network information',
+            'processes':'Checking for various malicious leads on the system processes/files/services'}
     for k,v in mods.items():
         print("{}\t=>\t\t{}".format(k,v))
 
