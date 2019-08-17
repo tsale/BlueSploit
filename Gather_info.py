@@ -73,5 +73,13 @@ class Network_checks():
         print(dnsChecks)
         Files.mk_file("dnsChecks.txt",dnsChecks)
         return(dnsChecks)         
-            
+
+class System_files():
+    def check_unsigned():
+        print(green+"\n\tChecking for Unsigned executables on the system\n"+reset)
+        unsigned = subprocess.run("""powershell.exe "Get-ChildItem -Recurse $env:APPDATA\..\*.exe -ea ig| ForEach-object {Get-AuthenticodeSignature $_ -ea ig} | Where-Object {$_.status -ine 'Valid'}|Select Status,Path" 2> nul""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        print(unsigned)
+        
+        Files.mk_file("UNSIGNED_EXEs.txt",unsigned)
+        
     
