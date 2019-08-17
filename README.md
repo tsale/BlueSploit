@@ -6,7 +6,7 @@ BlueSploit is a DFIR framework that will make it easy for the analyst to kick of
 The aim of this framework is to use a set of tools written mostly in PowerShell and make the investigation a breeze. <br>
 <br>
 
-<p><img src="https://github.com/tsale/BlueSploit/blob/master/BlueSploit_menu.PNG" alt="" /></p>
+<p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/Bluesploit_menu.PNG" alt="" /></p>
 
 Current stage of the project: <b>Pre-Alpha</b> 
 <br> <br> 
