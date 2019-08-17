@@ -105,14 +105,10 @@ class BlueSploit(cmd2.Cmd):
         super().__init__(*args, **kwargs)
         self.prompt = (Style.RESET_ALL + Style.BRIGHT  + Back.BLUE + "\nBlueSploit $> "+ Style.RESET_ALL +  Fore.GREEN)    
 
+
     def do_list_modules(self,args):
       modules()
     
-   
-
-
-
-
 
 if __name__ == '__main__':
     app = BlueSploit()
