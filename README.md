@@ -7,6 +7,8 @@ The aim of this framework is to use a set of tools written mostly in PowerShell 
 <br>
 
 <p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/Bluesploit_menu.PNG" alt="" /></p>
+<br>
+<p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/netstat_listening.PNG" alt="" /></p>
 
 Current stage of the project: <b>Pre-Alpha</b> 
 <br> <br> 
