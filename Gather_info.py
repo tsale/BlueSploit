@@ -34,6 +34,11 @@ class Gather():
         
         return(userInfo,localAdmins)
     
+    def registry_startup():
+        print(green+"\n\tStartup registry hives:\n"+reset)
+        subprocess.call("""powershell.exe "Sysinternals/autorunsc.exe -nobanner -a lm -m -h-t" """,shell=True)
+        subprocess.call("""powershell.exe "Sysinternals/autorunsc.exe -nobanner -a lm -m -t -h -c -o Investigations/{}/reg_startup.csv" """.format(Files.name_file("")),shell=False)
+        
     
 class DeepBlue():    
     def deepBlue_security():
@@ -81,5 +86,6 @@ class System_files():
         print(unsigned)
         
         Files.mk_file("UNSIGNED_EXEs.txt",unsigned)
-        
+
+
     
