@@ -36,11 +36,13 @@ class Note_term(cmd2.Cmd):
 
     @cmd2.with_category(Notes)
     def do_add_note(self,args):
-      write_csv()
+        """Add a note"""
+        write_csv()
       
     @cmd2.with_category(Notes)
     def do_show_notes(self,args):
-      show_notes()
+        """show all the notes"""
+        show_notes()
     
 
 class Query_term(cmd2.Cmd):
@@ -52,14 +54,17 @@ class Query_term(cmd2.Cmd):
     
     @cmd2.with_category(Query_WinEvents)
     def do_check_deep_security(self,):
+        """Check for suspicious security windows events"""
         DeepBlue.deepBlue_security()
         
     @cmd2.with_category(Query_WinEvents)
     def do_check_deep_system(self,args):
+        """Check for suspicious system windows events"""
         DeepBlue.deepBlue_system()        
 
     @cmd2.with_category(Query_WinEvents)
     def do_check_deep_powershell(self,args):
+        """Check for suspicious powershell windows events"""
         DeepBlue.deepBlue_powershell() 
 
 
@@ -70,18 +75,41 @@ class Gather_term(cmd2.Cmd):
         self.prompt = 'Gather #> '
 
     gather_information = "Gather Information"
+    
+    @cmd2.with_category(gather_information)
+    def do_gather_reg_startup(self,args):
+        """Gather registry startup values"""
+        Gather.registry_startup()      
+        
 
     @cmd2.with_category(gather_information)
     def do_gather_sysinfo(self,args):
         """Gather system information"""
         Gather.systeminfo()
+         
 
     @cmd2.with_category(gather_information)
     def do_gather_usersinfo(self,args):
         """Gather local user information"""
         Gather.local_usersinfo()
-    
+        
+        
+class Processes_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'Processes #> '
 
+    check_processes = "Checking for various malicious leads on the system processes/files/services"
+    
+    @cmd2.with_category(check_processes)    
+    def do_check_unsigned(self,args):
+        """Check for unsigned executables on the system"""
+        System_files.check_unsigned()
+    
+    
+    
+@cmd2_submenu.AddSubmenu(Processes_term(),
+                         command='processes')
 @cmd2_submenu.AddSubmenu(Network_term(),
                          command='network')
 @cmd2_submenu.AddSubmenu(Note_term(),
