@@ -66,6 +66,9 @@ class Query_term(cmd2.Cmd):
     def do_check_deep_powershell(self,args):
         """Check for suspicious powershell windows events"""
         DeepBlue.deepBlue_powershell() 
+        
+        
+        
 
 
 
@@ -76,11 +79,7 @@ class Gather_term(cmd2.Cmd):
 
     gather_information = "Gather Information"
     
-    @cmd2.with_category(gather_information)
-    def do_gather_reg_startup(self,args):
-        """Gather registry startup values"""
-        Gather.registry_startup()      
-        
+      
 
     @cmd2.with_category(gather_information)
     def do_gather_sysinfo(self,args):
@@ -92,6 +91,27 @@ class Gather_term(cmd2.Cmd):
     def do_gather_usersinfo(self,args):
         """Gather local user information"""
         Gather.local_usersinfo()
+    
+    
+    
+class Check_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'Check #> '
+
+    Check_system = "Check system for Information"
+    
+    @cmd2.with_category(Check_system)
+    def do_check_startup_directories(self,args):
+        """Check common user startup directories"""
+        Check.files_startup()
+        
+    @cmd2.with_category(Check_system)
+    def do_check_startup_registry(self,args):
+        """Check registry startup values"""
+        Check.startup_registry()        
+        
+        
         
         
 class Processes_term(cmd2.Cmd):
@@ -107,7 +127,10 @@ class Processes_term(cmd2.Cmd):
         System_files.check_unsigned()
     
     
-    
+
+
+@cmd2_submenu.AddSubmenu(Check_term(),
+                         command='check')    
 @cmd2_submenu.AddSubmenu(Processes_term(),
                          command='processes')
 @cmd2_submenu.AddSubmenu(Network_term(),
