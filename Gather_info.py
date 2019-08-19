@@ -4,6 +4,7 @@ from data import *
 
 green = Fore.GREEN
 reset = Fore.RESET
+red = Fore.RED
 
 class Gather():
     def systeminfo():
@@ -14,7 +15,7 @@ class Gather():
         
         ## Write results to file
         args = str(sysinfo)
-        Files.mk_file("system-info.txt",sysinfo)
+        Files.mk_file("SYSTEM-INFO.txt",sysinfo)
         return(sysinfo)
     
     def local_usersinfo():
@@ -34,10 +35,7 @@ class Gather():
         
         return(userInfo,localAdmins)
     
-    def registry_startup():
-        print(green+"\n\tStartup registry hives:\n"+reset)
-        subprocess.call("""powershell.exe "Sysinternals/autorunsc.exe -nobanner -a lm -m -h-t" """,shell=True)
-        subprocess.call("""powershell.exe "Sysinternals/autorunsc.exe -nobanner -a lm -m -t -h -c -o Investigations/{}/reg_startup.csv" """.format(Files.name_file("")),shell=False)
+
         
     
 class DeepBlue():    
@@ -51,12 +49,28 @@ class DeepBlue():
         powershell = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log powershell | Out-Host -Paging""",shell=True)
         return(powershell)
     
+
+class Check():
+    def startup_registry():
+        print(green+"\n\tStartup registry hives:\n"+reset)
+        subprocess.call("""powershell.exe "Sysinternals/autorunsc.exe -nobanner -a lm -m -h-t" """,shell=True)
+        dir_name = Files.name_file("")
+        subprocess.call("""powershell.exe "Sysinternals/autorunsc.exe -nobanner -a lm -m -t -h -c -o Investigations/{}/{}REG_STARTUP.csv" """.format(dir_name,dir_name),shell=False)
+        
+    def files_startup():
+        print(green+"\n\tStartup User Directories:\n"+reset)
+        print(green+"Specify the User: "+reset)
+        startup_cmd = subprocess.run("startup_file.bat 2>&1 2>NUL",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        print(red+startup_cmd+reset)
+        
+        args = "{}".format(startup_cmd)
+        Files.mk_file("STARTUP_DIRECTORIES.txt",args)
     
 class Network_checks():
     def netstat_info():
         info = subprocess.run("""powershell.exe "netstat -ant | select -skip 4 | ConvertFrom-String -PropertyNames none, proto,ipsrc,ipdst,state,state2,none,none | select ipsrc,ipdst,state" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(info)
-        Files.mk_file("netstat-info.txt",info)
+        Files.mk_file("NETSTAT-INFO.txt",info)
         
         return(info)
     
@@ -69,7 +83,7 @@ class Network_checks():
         print(green+"\n\n\tNetwork connections for running executable(Detailed):\n"+reset)
         print(net_info)
         args = "{}{}".format(listening_processes,net_info)
-        Files.mk_file("netstat-listening_processes.txt",args)
+        Files.mk_file("NETSTAT-LISTENING_PROCESSES.txt",args)
         
         return(listening_processes,net_info)        
         
