@@ -16,7 +16,7 @@ Current stage of the project: <b>Pre-Alpha</b>
 <p><span style="text-decoration: underline;"><strong>Upcoming Features:</strong></span></p>
 <ul style="list-style-type: circle;">
 <li>Memory captures</li>
-<li>Investigating registry keys</li>
+<li><strike>Investigating registry keys</strike></li>
 <li>short term re-mediation of malicious artifact</li>
 <li>Detect persistence</li>
 <li>Re-mediate malicious files</li>
