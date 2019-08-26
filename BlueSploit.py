@@ -101,15 +101,11 @@ class Check_term(cmd2.Cmd):
 
     Check_system = "Check system for Information"
     
-    @cmd2.with_category(Check_system)
-    def do_check_startup_directories(self,args):
-        """Check common user startup directories"""
-        Check.files_startup()
         
     @cmd2.with_category(Check_system)
-    def do_check_startup_registry(self,args):
-        """Check registry startup values"""
-        Check.startup_registry()        
+    def do_check_startup_files(self,args):
+        """Check registry startup files and their locations"""
+        Check.startup_files()        
         
         
         
