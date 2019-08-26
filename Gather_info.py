@@ -51,20 +51,15 @@ class DeepBlue():
     
 
 class Check():
-    def startup_registry():
-        print(green+"\n\tStartup registry hives:\n"+reset)
-        subprocess.call("""powershell.exe "Sysinternals/autorunsc.exe -nobanner -a lm -m -h-t" """,shell=True)
+    def startup_files():
+        print(green+"\n\tChecking for startup programs:\n"+reset)
         dir_name = Files.name_file("")
-        subprocess.call("""powershell.exe "Sysinternals/autorunsc.exe -nobanner -a lm -m -t -h -c -o Investigations/{}/{}REG_STARTUP.csv" """.format(dir_name,dir_name),shell=False)
+        run = subprocess.call("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-list " """,shell=True)
+        startup = subprocess.run("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-Table -Autosize | Out-String -Width 4096 " """,shell=False,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        print(run)
         
-    def files_startup():
-        print(green+"\n\tStartup User Directories:\n"+reset)
-        print(green+"Specify the User: "+reset)
-        startup_cmd = subprocess.run("startup_file.bat 2>&1 2>NUL",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        print(red+startup_cmd+reset)
-        
-        args = "{}".format(startup_cmd)
-        Files.mk_file("STARTUP_DIRECTORIES.txt",args)
+        args = "{}".format(startup)
+        Files.mk_file("STARTUP_FILES.txt",args)
     
 class Network_checks():
     def netstat_info():
