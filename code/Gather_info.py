@@ -71,10 +71,10 @@ class Network_checks():
     
     def netstat_listening():    
         print(green+"\n\tListening processes(brief):"+reset)
-        listening_processes = subprocess.run("""powershell.exe "netstat -ano | findstr -i listening | ForEach-Object { $_ -split '\s+|\t+' } | findstr /r '^[1-9+]*$' | sort | unique | ForEach-Object { Get-Process -Id $_ } | Select ProcessName,Path,Company,Description" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        listening_processes = subprocess.run("""powershell.exe "netstat -ano | findstr -i listening | ForEach-Object { $_ -split '\s+|\t+' } | findstr /r '^[1-9+]*$' | sort | unique | ForEach-Object { Get-Process -Id $_ } | Select ProcessName,Path,Company,Description | Format-Table -Autosize | Out-String -Width 4096" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(listening_processes)
         
-        net_info = subprocess.run("""powershell.exe "Get-NetTCPConnection -State Established|? RemoteAddress -NotLike '127.*'| Select RemoteAddress, RemotePort, OwningProcess, @{n='Path';e={(gps -Id $_.OwningProcess).Path}},@{n='Hash';e={(gps -Id $_.OwningProcess|gi|filehash).hash}}, @{n='User';e={(gps -Id $_.OwningProcess -IncludeUserName).UserName}}|sort|gu -AS|FT" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        net_info = subprocess.run("""powershell.exe "Get-NetTCPConnection -State Established|? RemoteAddress -NotLike '127.*'| Select RemoteAddress, RemotePort, OwningProcess, @{n='Path';e={(gps -Id $_.OwningProcess).Path}},@{n='Hash';e={(gps -Id $_.OwningProcess|gi|filehash).hash}}, @{n='User';e={(gps -Id $_.OwningProcess -IncludeUserName).UserName}}|sort|gu -AS|FT -Autosize | Out-String -Width 4096"  """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(green+"\n\n\tNetwork connections for running executable(Detailed):\n"+reset)
         print(net_info)
         args = "{}{}".format(listening_processes,net_info)
@@ -91,7 +91,7 @@ class Network_checks():
 class System_files():
     def check_unsigned():
         print(green+"\n\tChecking for Unsigned executables on the system\n"+reset)
-        unsigned = subprocess.run("""powershell.exe "Get-ChildItem -Recurse $env:APPDATA\..\*.exe -ea ig| ForEach-object {Get-AuthenticodeSignature $_ -ea ig} | Where-Object {$_.status -ine 'Valid'}|Select Status,Path" 2> nul""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        unsigned = subprocess.run("""powershell.exe "Get-ChildItem -Recurse c:\*.exe -ea ig| ForEach-object {Get-AuthenticodeSignature $_ -ea ig} | Where-Object {$_.status -ine 'Valid'}|Select Status,Path |findstr 'NotSigned' """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(unsigned)
         
         Files.mk_file("UNSIGNED_EXEs.txt",unsigned)
