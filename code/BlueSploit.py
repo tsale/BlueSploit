@@ -53,7 +53,7 @@ class Query_term(cmd2.Cmd):
     Query_WinEvents = "Query Windows events"
     
     @cmd2.with_category(Query_WinEvents)
-    def do_check_deep_security(self,):
+    def do_check_deep_security(self,args):
         """Check for suspicious security windows events"""
         DeepBlue.deepBlue_security()
         
