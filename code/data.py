@@ -50,3 +50,4 @@ class Files():
         
 
 os.makedirs("Investigations/{}".format(Files.name_file("")),exist_ok=True)
+subprocess.call("powershell.exe $ErrorActionPreference= 'silentlycontinue'",shell=True)
