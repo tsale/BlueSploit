@@ -16,15 +16,15 @@ Current stage of the project: <b>Pre-Alpha</b>
 <p><span style="text-decoration: underline;"><strong>Upcoming Features:</strong></span></p>
 <ul style="list-style-type: circle;">
 <li>Memory captures</li>
-<li><strike>Investigating registry keys</strike></li>
-<li>short term re-mediation of malicious artifact</li>
-<li>Detect persistence</li>
-<li>Re-mediate malicious files</li>
-<li>Killing malicious processes/services found</li>
-<li>Investigate suspicious network connections</li>
-<li>Latest system activities queries</li>
-<li>Dump all Log-On/Off events</li>
-<li>Blocking/Unblocking IPs</li>
+<li>&#9745;Investigating registry keys</li>
+ <li>&#9745;Create files with every command run (under <i>"Investigation"</i> folder)</li>
+<li>&#9744;short term re-mediation of malicious artifact</li>
+<li>&#9744;Detect persistence</li>
+<li>&#9744;Re-mediate malicious files</li>
+<li>&#9744;Killing malicious processes/services found</li>
+<li>&#9744;Investigate suspicious network connections</li>
+<li>&#9744;Dump all Log-On/Off events</li>
+<li>&#9744;Blocking/Unblocking IPs</li>
 </ul>
 <em>And much more...</em><br><br>
 
