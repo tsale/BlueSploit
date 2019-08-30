@@ -15,7 +15,7 @@ Current stage of the project: <b>Pre-Alpha</b>
 
 <p><span style="text-decoration: underline;"><strong>Upcoming Features:</strong></span></p>
 <ul style="list-style-type: circle;">
-<li>Memory captures</li>
+
 <li>&#9745;Investigating registry keys</li>
  <li>&#9745;Memory Captures</li>
  <li>&#9745;Create files with every command run (under <i>"Investigation"</i> folder)</li>
