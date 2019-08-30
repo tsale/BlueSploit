@@ -1,6 +1,8 @@
 import subprocess
 from colorama import Fore, Back, Style
 from data import *
+import socket,os
+from file import *
 
 green = Fore.GREEN
 reset = Fore.RESET
@@ -9,13 +11,15 @@ red = Fore.RED
 class Gather():
     def systeminfo():
         ## run and print systeminfo results
+        tools("psinfo.exe",psinfo)
         print(green+"\n\tLocal System Information: \n"+reset)
-        sysinfo = subprocess.run("sysinternals\psinfo -accepteula -s -h -d",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        sysinfo = subprocess.run("psinfo.exe -accepteula -s -h -d",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(sysinfo)
         
         ## Write results to file
         args = str(sysinfo)
         Files.mk_file("SYSTEM-INFO.txt",sysinfo)
+        os.remove("psinfo.exe")
         return(sysinfo)
     
     def local_usersinfo():
@@ -40,13 +44,40 @@ class Gather():
     
 class DeepBlue():    
     def deepBlue_security():
-        security  = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log security| Out-Host -Paging""",shell=True)
+        tools("deepblue.ps1",deepblue)
+        tools("regexes.txt",regexes)
+        tools("whitelist.txt",whitelist)
+        
+        security  = subprocess.call("""powershell.exe ".\deepblue.ps1 -log security| Out-Host -Paging""",shell=True)
+        
+        os.remove("regexes.txt")
+        os.remove("whitelist.txt")
+        os.remove("deepblue.ps1")
         return(security)
+    
     def deepBlue_system():
-        system = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log security | Out-Host -Paging""",shell=True)
+        tools("deepblue.ps1",deepblue)
+        tools("regexes.txt",regexes)
+        tools("whitelist.txt",whitelist)
+        
+        system = subprocess.call("""powershell.exe ".\deepblue.ps1 -log system | Out-Host -Paging""",shell=True)
+        
+        os.remove("regexes.txt")
+        os.remove("whitelist.txt")
+        os.remove("deepblue.ps1")    
         return(system)
+    
     def deepBlue_powershell():
-        powershell = subprocess.call("""powershell.exe "DeepBlueCLI\DeepBlue.ps1 -log powershell | Out-Host -Paging""",shell=True)
+        tools("deepblue.ps1",deepblue)
+        tools("regexes.txt",regexes)
+        tools("whitelist.txt",whitelist)
+        
+        powershell = subprocess.call("""powershell.exe ".\deepblue.ps1 -log powershell | Out-Host -Paging""",shell=True)
+        
+        os.remove("regexes.txt")
+        os.remove("whitelist.txt")
+        os.remove("deepblue.ps1")
+        
         return(powershell)
     
 
@@ -96,5 +127,14 @@ class System_files():
         
         Files.mk_file("UNSIGNED_EXEs.txt",unsigned)
 
-
     
+
+class Memory():
+    def mem_capture():
+        tools("magnet.exe",magnet)
+        name = "Investigations\{}\{}_Memory-Capture.raw".format(Files.name_file(""),socket.gethostname())
+        print(name)
+        
+        print(green+"\n\tCapturing memory:\n"+reset)
+        subprocess.call("""magnet.exe /accepteula /go "{}" """.format(name),shell=True)
+        os.remove("magnet.exe")
