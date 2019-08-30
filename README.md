@@ -3,7 +3,7 @@
 <p>BlueSploit is the Metasploit of the Blue Team, because I was tired of seing Red Team frameworks, I created Bluesploit. Not many people want to create defensive tools. I get it, Red Team is awesome but is also easy. We need more people creating Blue Team tools and contribute to the defensive side of things.</p><br>
 
 BlueSploit is a DFIR framework that will make it easy for the analyst to kick off an investigation. <br> 
-The aim of this framework is to use a set of tools written mostly in PowerShell and make the investigation a breeze. <br>
+The aim of this framework is to use mostly "live of the land" tools and commands to make the investigation a breeze with only a standalone executable. <br>
 <br>
 
 <p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/Bluesploit_menu.PNG" alt="" /></p>
