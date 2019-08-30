@@ -85,6 +85,7 @@ class Gather_term(cmd2.Cmd):
     def do_gather_sysinfo(self,args):
         """Gather system information"""
         Gather.systeminfo()
+          
          
 
     @cmd2.with_category(gather_information)
@@ -121,10 +122,22 @@ class Processes_term(cmd2.Cmd):
     def do_check_unsigned(self,args):
         """Check for unsigned executables on the system"""
         System_files.check_unsigned()
-    
-    
+        
+        
+class Mem_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'Memory #> '
 
+    mem_tasks = "Memory Acquisition tasks"
+    
+    @cmd2.with_category(mem_tasks)
+    def do_memory_capture(self,args):
+        """Capture system's raw memory"""
+        Memory.mem_capture()          
 
+@cmd2_submenu.AddSubmenu(Mem_term(),
+                         command='memory')  
 @cmd2_submenu.AddSubmenu(Check_term(),
                          command='check')    
 @cmd2_submenu.AddSubmenu(Processes_term(),
