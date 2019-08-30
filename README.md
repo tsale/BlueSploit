@@ -17,6 +17,7 @@ Current stage of the project: <b>Pre-Alpha</b>
 <ul style="list-style-type: circle;">
 <li>Memory captures</li>
 <li>&#9745;Investigating registry keys</li>
+ <li>&#9745;Memory Capture</li>
  <li>&#9745;Create files with every command run (under <i>"Investigation"</i> folder)</li>
 <li>&#9744; Short term re-mediation of malicious artifact</li>
 <li>&#9744; Re-mediate malicious files</li>
