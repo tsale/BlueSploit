@@ -12,10 +12,4 @@ def tools(name,name2):
     data = name2
     exefile = open(name,"wb")
     exefile.write(base64.b64decode(data))
-    exefile.close()    
-
-        
-        
-#dir = "C:\\Users\\Kostas\\Documents\\Python\\BlueSploit\\tools\\"
-#subprocess.call(""" test.exe /accepteula /go "{}test.raw" """.format(dir),shell=True)
-#os.remove("test.exe")
+    exefile.close()     
