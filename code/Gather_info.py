@@ -1,12 +1,14 @@
 import subprocess
-from colorama import Fore, Back, Style
+from colorama import Fore
 from data import *
 import socket,os
 from file import *
+import re
 
 green = Fore.GREEN
 reset = Fore.RESET
 red = Fore.RED
+
 
 class Gather():
     def systeminfo():
@@ -80,17 +82,6 @@ class DeepBlue():
         
         return(powershell)
     
-
-class Check():
-    def startup_files():
-        print(green+"\n\tChecking for startup programs:\n"+reset)
-        dir_name = Files.name_file("")
-        run = subprocess.call("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-list " """,shell=True)
-        startup = subprocess.run("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-Table -Autosize | Out-String -Width 4096 " """,shell=False,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        print(run)
-        
-        args = "{}".format(startup)
-        Files.mk_file("STARTUP_FILES.txt",args)
     
 class Network_checks():
     def netstat_info():
@@ -119,14 +110,55 @@ class Network_checks():
         Files.mk_file("dnsChecks.txt",dnsChecks)
         return(dnsChecks)         
 
-class System_files():
-    def check_unsigned():
+class Inspect():
+    
+    def inspect_startup():
+        print(green+"\n\tChecking for startup programs:\n"+reset)
+        dir_name = Files.name_file("")
+        run = subprocess.call("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-list " """,shell=True)
+        startup = subprocess.run("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-Table -Autosize | Out-String -Width 4096 " """,shell=False,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        print(run)
+        
+        args = "{}".format(startup)
+        Files.mk_file("STARTUP_FILES.txt",args)    
+    
+    def inspect_unsigned():
         print(green+"\n\tChecking for Unsigned executables on the system\n"+reset)
         unsigned = subprocess.run("""powershell.exe "Get-ChildItem -Recurse c:\*.exe -ea ig| ForEach-object {Get-AuthenticodeSignature $_ -ea ig} | Where-Object {$_.status -ine 'Valid'}|Select Status,Path |findstr 'NotSigned' """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(unsigned)
         
         Files.mk_file("UNSIGNED_EXEs.txt",unsigned)
+            
+    
+    def inspect_exe_strings():
+        tools("strings.exe",strings)
+        strings_exe = input(green+"Insert executable including its path: (e.g. C:\malicious.exe ): ")
+        strings_cmd = subprocess.check_output("""strings.exe -n 10 {}" """.format(strings_exe)).decode('utf-8')
+        strings_cmd = strings_cmd.replace("\n", " ")
+        strings_cmd = strings_cmd.replace("\r", " ")          
+        
+        
+        ips = re.findall('[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*',strings_cmd)
+        ips = ("\nLooking for IPs from {}\n{}\n".format(strings_exe,ips)) 
+        print(ips)
+        time.sleep(2)
 
+        
+        urls = re.findall('http[s]?:\/\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',strings_cmd)
+        urls = ("\nLooking for URLs from {}\n{}\n\n".format(strings_exe,urls)) 
+        print(urls)
+        time.sleep(2)
+        
+        unicode = subprocess.check_output("""strings.exe -nobanner -n 5 -u {}" """.format(strings_exe)).decode('utf-8')
+        unicode = ("\nLooking for UNICODE from {}\n\n{}".format(strings_exe,unicode)) 
+        print(unicode)
+        
+        
+        args = "{}{}{}".format(ips,urls,unicode)
+        strings_exe = strings_exe.rsplit("\\",1)[-1]
+        Files.mk_file("STRINGS-{}.txt".format(strings_exe),args)
+        
+        os.remove("strings.exe")
     
 
 class Memory():

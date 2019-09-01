@@ -1,7 +1,7 @@
 import cmd2
 from Gather_info import *
 from data import *
-from colorama import Fore, Back, Style, init
+from colorama import Fore, Back, Style
 import cmd2_submenu
 
 
@@ -92,37 +92,32 @@ class Gather_term(cmd2.Cmd):
     def do_gather_usersinfo(self,args):
         """Gather local user information"""
         Gather.local_usersinfo()
-    
-    
-    
-class Check_term(cmd2.Cmd):
+        
+        
+        
+class Inspect_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prompt = 'Check #> '
+        self.prompt = 'Inspect #> '
 
-    Check_system = "Check system for Information"
+    inspect_system = "Inspecting system for malicious artifacts on executables/processes/files/services"
     
+    @cmd2.with_category(inspect_system)    
+    def do_inspect_exe_unsigned(self,args):
+        """Inspecting system for unsigned executables"""
+        Inspect.inspect_unsigned()
         
-    @cmd2.with_category(Check_system)
+    @cmd2.with_category(inspect_system)    
+    def do_inspect_strings(self,args):
+        """Inspecting suspicious lines of chosen executable"""
+        Inspect.inspect_exe_strings()        
+    
+    @cmd2.with_category(inspect_system)
     def do_check_startup_files(self,args):
         """Check registry startup files and their locations"""
-        Check.startup_files()        
+        Inspect.inspect_startup()        
         
-        
-        
-        
-class Processes_term(cmd2.Cmd):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.prompt = 'Processes #> '
-
-    check_processes = "Checking for various malicious leads on the system processes/files/services"
-    
-    @cmd2.with_category(check_processes)    
-    def do_check_unsigned(self,args):
-        """Check for unsigned executables on the system"""
-        System_files.check_unsigned()
-        
+             
         
 class Mem_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
@@ -137,11 +132,9 @@ class Mem_term(cmd2.Cmd):
         Memory.mem_capture()          
 
 @cmd2_submenu.AddSubmenu(Mem_term(),
-                         command='memory')  
-@cmd2_submenu.AddSubmenu(Check_term(),
-                         command='check')    
-@cmd2_submenu.AddSubmenu(Processes_term(),
-                         command='processes')
+                         command='memory')    
+@cmd2_submenu.AddSubmenu(Inspect_term(),
+                         command='inspect')
 @cmd2_submenu.AddSubmenu(Network_term(),
                          command='network')
 @cmd2_submenu.AddSubmenu(Note_term(),
@@ -167,7 +160,7 @@ class BlueSploit(cmd2.Cmd):
 
 
     def do_list_modules(self,args):
-      modules()
+        modules()
     
 
 if __name__ == '__main__':

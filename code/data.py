@@ -9,8 +9,9 @@ def modules():
     mods = {'gather':'Gather Information',
             'query':'Query Windows events',
             'network':'Show current network information',
-            'processes':'Checking for various malicious leads on the system processes/files/services',
-            'check':'Checking the systems for suspicious artifacts'}
+            'memory':'Memory forensics',
+            'inspect':'Inspect system for malicious artifacts'}
+    
     for k,v in mods.items():
         print("{}\t=>\t\t{}".format(k,v))
 
