@@ -113,8 +113,8 @@ class Inspect_term(cmd2.Cmd):
         Inspect.inspect_exe_strings()        
     
     @cmd2.with_category(inspect_system)
-    def do_check_startup_files(self,args):
-        """Check registry startup files and their locations"""
+    def do_inspect_startup(self,args):
+        """Inspect registry startup files and their locations"""
         Inspect.inspect_startup()        
         
              
