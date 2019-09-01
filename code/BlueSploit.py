@@ -94,6 +94,11 @@ class Gather_term(cmd2.Cmd):
         Gather.local_usersinfo()
         
         
+    @cmd2.with_category(gather_information)
+    def do_gather_win_logs(self,args):
+        """Gather Security|System|Powershell event logs"""
+        Gather.copy_evtx()        
+        
         
 class Inspect_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):

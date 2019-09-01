@@ -41,6 +41,21 @@ class Gather():
         
         return(userInfo,localAdmins)
     
+    def copy_evtx():
+        inv_dir = Files.name_file("")
+        curdir = os.getcwd()
+        print(green+"\n\t Copying Security|System|Powershell events to {}\Investigations\{}\evtx_logs: \n".format(curdir,inv_dir)+reset)   
+        try:
+            os.makedirs("{}\\Investigations\\{}\\evtx_logs".format(curdir,inv_dir))
+        except:
+            pass
+        fin_path = "{}\\Investigations\\{}\\evtx_logs".format(curdir,inv_dir)
+        
+        
+        subprocess.run("wevtutil epl Security {}\Security.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        subprocess.run("wevtutil epl System {}\System.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        subprocess.run("wevtutil epl Microsoft-Windows-PowerShell/Operational {}\Microsoft-Windows-PowerShel_Operational.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        
 
         
     
