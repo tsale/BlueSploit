@@ -114,7 +114,6 @@ class Inspect():
     
     def inspect_startup():
         print(green+"\n\tChecking for startup programs:\n"+reset)
-        dir_name = Files.name_file("")
         run = subprocess.call("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-list " """,shell=True)
         startup = subprocess.run("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-Table -Autosize | Out-String -Width 4096 " """,shell=False,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(run)
