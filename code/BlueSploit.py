@@ -11,19 +11,24 @@ class Network_term(cmd2.Cmd):
         super().__init__(*args, **kwargs)
         self.prompt = 'Network #> '
     
-    Network = "Network data information"
+    Network = "Network data information and tasks"
     
     @cmd2.with_category(Network)
     def do_netstat_info(self,args):  
-        Network_checks.netstat_info()
+        Network.netstat_info()
+        
+    @cmd2.with_category(Network)
+    """Capturing a packet"""
+    def do_packet_capture(self,args):  
+        Network.packet_capture()    
     
     @cmd2.with_category(Network)
     def do_netstat_listening(self,args):  
-        Network_checks.netstat_listening()
+        Network.netstat_listening()
     
     @cmd2.with_category(Network)
     def do_dns_checks(self,args):  
-        Network_checks.dns_checks()        
+        Network.dns_checks()        
 
 
 class Note_term(cmd2.Cmd):
@@ -135,6 +140,7 @@ class Mem_term(cmd2.Cmd):
     def do_memory_capture(self,args):
         """Capture system's raw memory"""
         Memory.mem_capture()          
+
 
 @cmd2_submenu.AddSubmenu(Mem_term(),
                          command='memory')    

@@ -1,13 +1,25 @@
 import subprocess
 from colorama import Fore
 from data import *
-import socket,os
+import socket,os,sys
 from file import *
 import re
+from scapy.all import sniff
+from scapy.all import wrpcap
+import pydoc
+from threading import Thread
+from tqdm import tqdm
+import time
+
 
 green = Fore.GREEN
 reset = Fore.RESET
 red = Fore.RED
+curdir = os.getcwd()
+hostname = socket.gethostname()
+ntv_folder = Files.name_file("")
+final_path = curdir + "\\Investigations\\" + ntv_folder
+
 
 
 class Gather():
@@ -42,14 +54,12 @@ class Gather():
         return(userInfo,localAdmins)
     
     def copy_evtx():
-        inv_dir = Files.name_file("")
-        curdir = os.getcwd()
-        print(green+"\n\t Copying Security|System|Powershell events to {}\Investigations\{}\evtx_logs: \n".format(curdir,inv_dir)+reset)   
+        print(green+"\n\t Copying Security|System|Powershell events to:\n ==> {}\\evtx_logs: \n".format(final_path)+reset)   
         try:
-            os.makedirs("{}\\Investigations\\{}\\evtx_logs".format(curdir,inv_dir))
+            os.makedirs("{}\\evtx_logs".format(final_path))
         except:
             pass
-        fin_path = "{}\\Investigations\\{}\\evtx_logs".format(curdir,inv_dir)
+        fin_path = "{}\\evtx_logs".format(final_path)
         
         
         subprocess.run("wevtutil epl Security {}\Security.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
@@ -65,40 +75,49 @@ class DeepBlue():
         tools("regexes.txt",regexes)
         tools("whitelist.txt",whitelist)
         
-        security  = subprocess.call("""powershell.exe ".\deepblue.ps1 -log security| Out-Host -Paging""",shell=True)
+        security  = subprocess.run("""powershell.exe ".\deepblue.ps1 -log security """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         
         os.remove("regexes.txt")
         os.remove("whitelist.txt")
         os.remove("deepblue.ps1")
-        return(security)
+        
+        pydoc.pager(security)
+        Files.mk_file("Security_Deep.txt",security)           
     
     def deepBlue_system():
         tools("deepblue.ps1",deepblue)
         tools("regexes.txt",regexes)
         tools("whitelist.txt",whitelist)
         
-        system = subprocess.call("""powershell.exe ".\deepblue.ps1 -log system | Out-Host -Paging""",shell=True)
+        system = subprocess.run("""powershell.exe ".\deepblue.ps1 -log system """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         
         os.remove("regexes.txt")
         os.remove("whitelist.txt")
-        os.remove("deepblue.ps1")    
-        return(system)
+        os.remove("deepblue.ps1")   
+        
+        pydoc.pager(system)
+        Files.mk_file("System_deep.txt",system)        
+        
     
     def deepBlue_powershell():
         tools("deepblue.ps1",deepblue)
         tools("regexes.txt",regexes)
         tools("whitelist.txt",whitelist)
         
-        powershell = subprocess.call("""powershell.exe ".\deepblue.ps1 -log powershell | Out-Host -Paging""",shell=True)
+        powershell = subprocess.run("""powershell.exe ".\deepblue.ps1 -log powershell """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         
         os.remove("regexes.txt")
         os.remove("whitelist.txt")
         os.remove("deepblue.ps1")
         
+        print(powershell)
+        Files.mk_file("Powershell_Deep.txt",powershell)
+        
         return(powershell)
     
     
-class Network_checks():
+class Network():
+    
     def netstat_info():
         info = subprocess.run("""powershell.exe "netstat -ant | select -skip 4 | ConvertFrom-String -PropertyNames none, proto,ipsrc,ipdst,state,state2,none,none | select ipsrc,ipdst,state" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(info)
@@ -124,6 +143,41 @@ class Network_checks():
         print(dnsChecks)
         Files.mk_file("dnsChecks.txt",dnsChecks)
         return(dnsChecks)         
+    
+    def packet_capture():
+        show_int = subprocess.run("""powershell.exe "Get-NetAdapter -Name '*' | Format-List -Property 'Name' " """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        interface = input("Choose from below interfaces:\n {} (Case sensitive) -->  ".format(show_int))
+        
+        while True:
+            try:
+                run_time = int(input("Choose how long you would like the capture to run for (in minutes): "))
+                break
+            except:
+                print("Please insert an integer number\n")
+        
+   
+        run_time = run_time *60     
+
+        num = run_time / 100 
+        
+        def bar(num=num):
+            try:
+                for i in tqdm(range(100)):
+                    time.sleep(num)
+            except KeyboardInterrupt:
+                sys.exit()                    
+            print(green+"\nThe packet has been captured under {}\\{}.pcap".format(final_path,hostname)+reset)
+            
+        def cap():
+            pakts_list = sniff(timeout=run_time,iface=interface)
+            return(pakts_list)
+        
+        Thread(target= bar).start()
+        Thread(target=cap).start()
+
+        
+            
+        wrpcap('{}\\{}.pcap'.format(final_path,hostname),cap())      
 
 class Inspect():
     
@@ -184,3 +238,4 @@ class Memory():
         print(green+"\n\tCapturing memory:\n"+reset)
         subprocess.call("""magnet.exe /accepteula /go "{}" """.format(name),shell=True)
         os.remove("magnet.exe")
+        
