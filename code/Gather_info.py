@@ -201,7 +201,7 @@ class Inspect():
     def inspect_exe_strings():
         tools("strings.exe",strings)
         strings_exe = input(green+"Insert executable including its path: (e.g. C:\malicious.exe ): ")
-        strings_cmd = subprocess.check_output("""strings.exe -n 10 {}" """.format(strings_exe)).decode('utf-8')
+        strings_cmd = subprocess.check_output("""strings.exe -n 10 "{}" """.format(strings_exe)).decode('utf-8')
         strings_cmd = strings_cmd.replace("\n", " ")
         strings_cmd = strings_cmd.replace("\r", " ")          
         
