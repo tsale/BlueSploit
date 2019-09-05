@@ -239,3 +239,15 @@ class Memory():
         subprocess.call("""magnet.exe /accepteula /go "{}" """.format(name),shell=True)
         os.remove("magnet.exe")
         
+        
+class Remediation():
+    def block_domain():
+        domain = input("Enter domain (no asterisk allowed) to block: ")
+        subprocess.call("""powershell.exe "Add-Content C:\Windows\System32\drivers\etc\hosts "`n127.0.0.1 {}" """.format(domain),shell=True)
+        print("\n{} domain is now blocked".format(domain))
+        
+    def block_ip():
+        ip = input("Enter IP to block: ")
+        subprocess.call("""powershell.exe "New-NetFirewallRule -DisplayName "Block_Malicious_IP" -Direction Outbound -LocalPort Any -Protocol TCP -Action Block -RemoteAddress {}" """.format(ip),shell=True)
+        print("\n{} ip is now blocked".format(ip))
+    

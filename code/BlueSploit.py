@@ -18,8 +18,8 @@ class Network_term(cmd2.Cmd):
         Network.netstat_info()
         
     @cmd2.with_category(Network)
-    """Capturing a packet"""
     def do_packet_capture(self,args):  
+        """Capturing a packet"""
         Network.packet_capture()    
     
     @cmd2.with_category(Network)
@@ -142,6 +142,26 @@ class Mem_term(cmd2.Cmd):
         Memory.mem_capture()          
 
 
+class Remediation_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'Remediation #> '
+
+    remediation = "Remediate of threats found"
+    
+    @cmd2.with_category(remediation)
+    def do_remediate_domain(self,args):
+        """Remediation of malicious domain"""
+        Remediation.block_domain()    
+    
+    @cmd2.with_category(remediation)
+    def do_remediate_ip(self,args):
+        """Remediation of malicious IP"""
+        Remediation.block_ip()        
+
+
+@cmd2_submenu.AddSubmenu(Remediation_term(),
+                         command='remediation')  
 @cmd2_submenu.AddSubmenu(Mem_term(),
                          command='memory')    
 @cmd2_submenu.AddSubmenu(Inspect_term(),

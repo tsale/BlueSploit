@@ -10,7 +10,8 @@ def modules():
             'query':'Query Windows events',
             'network':'Show current network information',
             'memory':'Memory forensics',
-            'inspect':'Inspect system for malicious artifacts'}
+            'inspect':'Inspect system for malicious artifacts',
+            'remediate':'Remediate of threats found'}
     
     for k,v in mods.items():
         print("{}\t=>\t\t{}".format(k,v))
