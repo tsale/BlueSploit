@@ -6,7 +6,7 @@ BlueSploit is a DFIR framework that will make it easy for the analyst to kick of
 The aim of this framework is to use mostly "live of the land" tools and commands to make the investigation a breeze with only a standalone executable. <br>
 <br>
 
-<p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/Bluesploit_menu.PNG" alt="" /></p>
+<p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/Bluesploit_menu.jpg" alt="" /></p>
 <br>
 <p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/netstat_listening.PNG" alt="" /></p>
 
