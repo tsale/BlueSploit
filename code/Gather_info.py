@@ -44,7 +44,7 @@ class Gather():
         
         ## run and print localAdmins results
         print(green + "\n\tLocal Users and Administrators: " + reset)     
-        localAdmins = subprocess.run("powershell.exe Get-LocalGroupMember -Group Administrators\n",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        localAdmins = subprocess.run("net localgroup administrators\n",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(localAdmins)
         
         ## Write results to file
@@ -75,7 +75,7 @@ class DeepBlue():
         tools("regexes.txt",regexes)
         tools("whitelist.txt",whitelist)
         
-        security  = subprocess.run("""powershell.exe ".\deepblue.ps1 -log security """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        security  = subprocess.run("""powershell.exe ".\deepblue.ps1 -log security |Format-Table -Autosize | Out-String -Width 4096""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         
         os.remove("regexes.txt")
         os.remove("whitelist.txt")
@@ -89,7 +89,7 @@ class DeepBlue():
         tools("regexes.txt",regexes)
         tools("whitelist.txt",whitelist)
         
-        system = subprocess.run("""powershell.exe ".\deepblue.ps1 -log system """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        system = subprocess.run("""powershell.exe ".\deepblue.ps1 -log system |Format-Table -Autosize | Out-String -Width 4096""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         
         os.remove("regexes.txt")
         os.remove("whitelist.txt")
@@ -104,7 +104,7 @@ class DeepBlue():
         tools("regexes.txt",regexes)
         tools("whitelist.txt",whitelist)
         
-        powershell = subprocess.run("""powershell.exe ".\deepblue.ps1 -log powershell """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        powershell = subprocess.run("""powershell.exe ".\deepblue.ps1 -log powershell |Format-Table -Autosize | Out-String -Width 4096""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         
         os.remove("regexes.txt")
         os.remove("whitelist.txt")
@@ -145,7 +145,7 @@ class Network():
         return(dnsChecks)         
     
     def packet_capture():
-        show_int = subprocess.run("""powershell.exe "Get-NetAdapter -Name '*' | Format-List -Property 'Name' " """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        show_int = subprocess.run("netsh interface show interface",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         interface = input("Choose from below interfaces:\n {} (Case sensitive) -->  ".format(show_int))
         
         while True:
@@ -156,28 +156,31 @@ class Network():
                 print("Please insert an integer number\n")
         
    
-        run_time = run_time *60     
+        #run_time = run_time *60     
 
-        num = run_time / 100 
+        #num = run_time / 100 
         
-        def bar(num=num):
-            try:
-                for i in tqdm(range(100)):
-                    time.sleep(num)
-            except KeyboardInterrupt:
-                sys.exit()                    
-            print(green+"\nThe packet has been captured under {}\\{}.pcap".format(final_path,hostname)+reset)
+
             
-        def cap():
+        try:
+            print(green+"\nCreating PCAP under: {}\\{}.pcap\n\nCheck back in {} minutes from now.\nExecution time:({})\n".format(final_path,hostname,run_time,time.ctime())+reset)
+            run_time = run_time *60   
             pakts_list = sniff(timeout=run_time,iface=interface)
-            return(pakts_list)
-        
-        Thread(target= bar).start()
-        Thread(target=cap).start()
+            wrpcap('{}\\{}.pcap'.format(final_path,hostname),pakts_list)                         
 
-        
+        except:
+            ans_np = input("Npcap is not installed, do you want to install it?(y/n): ")
+            if "y" in ans_np.lower():
+                tools("npcap.exe",npcap)
+                subprocess.call("npcap.exe",shell=True)
+                os.remove("npcap.exe")
+                print("\n RESTART BlueSploit in order for this to work.\n")
+            elif "n" in ans_np.lower():
+                pass
+            else:
+                print("Please answer with y or n")
             
-        wrpcap('{}\\{}.pcap'.format(final_path,hostname),cap())      
+   
 
 class Inspect():
     

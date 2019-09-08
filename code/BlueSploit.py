@@ -161,7 +161,7 @@ class Remediation_term(cmd2.Cmd):
 
 
 @cmd2_submenu.AddSubmenu(Remediation_term(),
-                         command='remediation')  
+                         command='remediate')  
 @cmd2_submenu.AddSubmenu(Mem_term(),
                          command='memory')    
 @cmd2_submenu.AddSubmenu(Inspect_term(),
@@ -191,6 +191,7 @@ class BlueSploit(cmd2.Cmd):
 
 
     def do_list_modules(self,args):
+        print("\n")
         modules()
     
 
