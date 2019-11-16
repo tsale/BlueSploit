@@ -14,7 +14,7 @@ def modules():
             'remediate':'Remediate of threats found'}
     
     for k,v in mods.items():
-        print("\t{}\t\t\t=>\t\t{}".format(k,v))
+        print(f"\t{k}\t\t\t=>\t\t{v}")
 
 
 

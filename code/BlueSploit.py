@@ -4,12 +4,21 @@ from data import *
 from colorama import Fore, Back, Style
 import cmd2_submenu
 
-
+        
 
 class Network_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Network #> '
+        self.hidden_commands.append('py')
+        self.hidden_commands.append('set')
+        self.hidden_commands.append('shortcuts')
+        self.hidden_commands.append('macro')
+        self.hidden_commands.append('alias')
+        self.hidden_commands.append('run_script')
+        self.hidden_commands.append('run_pyscript')
+        self.hidden_commands.append('history')
+        self.hidden_commands.append('shell')        
     
     Network = "Network data information and tasks"
     
@@ -31,29 +40,19 @@ class Network_term(cmd2.Cmd):
         Network.dns_checks()        
 
 
-class Note_term(cmd2.Cmd):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.prompt = 'notes #> '
-
-    Notes = "Keep notes"
-
-
-    @cmd2.with_category(Notes)
-    def do_add_note(self,args):
-        """Add a note"""
-        write_csv()
-      
-    @cmd2.with_category(Notes)
-    def do_show_notes(self,args):
-        """show all the notes"""
-        show_notes()
-    
-
 class Query_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Query #> '
+        self.hidden_commands.append('py')
+        self.hidden_commands.append('set')
+        self.hidden_commands.append('shortcuts')
+        self.hidden_commands.append('macro')
+        self.hidden_commands.append('alias')
+        self.hidden_commands.append('run_script')
+        self.hidden_commands.append('run_pyscript')
+        self.hidden_commands.append('history')
+        self.hidden_commands.append('shell')        
    
     Query_WinEvents = "Query Windows events"
     
@@ -81,6 +80,15 @@ class Gather_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Gather #> '
+        self.hidden_commands.append('py')
+        self.hidden_commands.append('set')
+        self.hidden_commands.append('shortcuts')
+        self.hidden_commands.append('macro')
+        self.hidden_commands.append('alias')
+        self.hidden_commands.append('run_script')
+        self.hidden_commands.append('run_pyscript')
+        self.hidden_commands.append('history')
+        self.hidden_commands.append('shell')        
 
     gather_information = "Gather Information"
     
@@ -103,12 +111,21 @@ class Gather_term(cmd2.Cmd):
     def do_gather_win_logs(self,args):
         """Gather Security|System|Powershell event logs"""
         Gather.copy_evtx()        
-        
+ 
         
 class Inspect_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Inspect #> '
+        self.hidden_commands.append('py')
+        self.hidden_commands.append('set')
+        self.hidden_commands.append('shortcuts')
+        self.hidden_commands.append('macro')
+        self.hidden_commands.append('alias')
+        self.hidden_commands.append('run_script')
+        self.hidden_commands.append('run_pyscript')
+        self.hidden_commands.append('history')
+        self.hidden_commands.append('shell')        
 
     inspect_system = "Inspecting system for malicious artifacts on executables/processes/files/services"
     
@@ -133,6 +150,15 @@ class Mem_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Memory #> '
+        self.hidden_commands.append('py')
+        self.hidden_commands.append('set')
+        self.hidden_commands.append('shortcuts')
+        self.hidden_commands.append('macro')
+        self.hidden_commands.append('alias')
+        self.hidden_commands.append('run_script')
+        self.hidden_commands.append('run_pyscript')
+        self.hidden_commands.append('history')
+        self.hidden_commands.append('shell')        
 
     mem_tasks = "Memory Acquisition tasks"
     
@@ -142,10 +168,19 @@ class Mem_term(cmd2.Cmd):
         Memory.mem_capture()          
 
 
-class Remediation_term(cmd2.Cmd):
+class Remediation_term(cmd2.Cmd):   
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Remediation #> '
+        self.hidden_commands.append('py')
+        self.hidden_commands.append('set')
+        self.hidden_commands.append('shortcuts')
+        self.hidden_commands.append('macro')
+        self.hidden_commands.append('alias')
+        self.hidden_commands.append('run_script')
+        self.hidden_commands.append('run_pyscript')
+        self.hidden_commands.append('history')
+        self.hidden_commands.append('shell')        
 
     remediation = "Remediate of threats found"
     
@@ -161,15 +196,13 @@ class Remediation_term(cmd2.Cmd):
 
 
 @cmd2_submenu.AddSubmenu(Remediation_term(),
-                         command='remediate')  
+                         command='remediate')
 @cmd2_submenu.AddSubmenu(Mem_term(),
                          command='memory')    
 @cmd2_submenu.AddSubmenu(Inspect_term(),
                          command='inspect')
 @cmd2_submenu.AddSubmenu(Network_term(),
                          command='network')
-@cmd2_submenu.AddSubmenu(Note_term(),
-                         command='notes')
 @cmd2_submenu.AddSubmenu(Query_term(),
                          command='query')
 @cmd2_submenu.AddSubmenu(Gather_term(),
@@ -188,12 +221,22 @@ class BlueSploit(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = (Style.RESET_ALL + Style.BRIGHT  + Back.BLUE + "\nBlueSploit $> "+ Style.RESET_ALL +  Fore.GREEN)    
-
-
+        self.hidden_commands.append('py')
+        self.hidden_commands.append('set')
+        self.hidden_commands.append('shortcuts')
+        self.hidden_commands.append('macro')
+        self.hidden_commands.append('alias')
+        self.hidden_commands.append('run_script')
+        self.hidden_commands.append('run_pyscript')
+        self.hidden_commands.append('history')
+        self.hidden_commands.append('shell')
+        
+    listmod = "List all available modules"    
+    @cmd2.with_category(listmod)    
     def do_list_modules(self,args):
         print("\n")
         modules()
-    
+
 
 if __name__ == '__main__':
     app = BlueSploit()
