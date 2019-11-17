@@ -21,12 +21,13 @@ Current stage of the project: <b>Pre-Alpha</b>
 <li>&#9745;Live packet cptures</li>
 <li>&#9745;Use of Strings to inspect executables</li>
 <li>&#9745;Create files with every command run (under <i>"Investigation"</i> folder)</li>
-<li>&#9744; Short term re-mediation of malicious artifact</li>
-<li>&#9744; Re-mediate malicious files (On Going)</li>
+<li>&#9745; Short term re-mediation of malicious artifact</li>
+<li>&#9745; Blocking/Unblocking IPs</li>
+<li>&#9745; Create timeline of events & and collect information for prefetch files (Using Nirsoft's tools)</li>
 <li>&#9744; Killing malicious processes/services found</li>
 <li>&#9744; Investigate suspicious network connections</li>
 <li>&#9744; Dump all Log-On/Off events</li>
-<li>&#9744; Blocking/Unblocking IPs</li>
+
 </ul>
 <em>And much more...</em><br><br>
 
