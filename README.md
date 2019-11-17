@@ -4,9 +4,9 @@
 
 BlueSploit is a DFIR framework with the main purpose being to quickly capture artifacts for later review. <br> 
 Most of the commands used are OS native commands. Native commands have their limitations, therefore, some executables will be used. I will reference all executables that are used on the bottom of this page along with links to their github page.<br>
-<br>
 
 The current implementation is focused on Windows environments. Some of the powershell commands will not work with windows 7 due to lack of backwards compatibility.<br> 
+<br>
 
 <p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/Bluesploit_menu.jpg" alt="" /></p>
 <br>
