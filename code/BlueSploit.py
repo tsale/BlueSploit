@@ -111,6 +111,16 @@ class Gather_term(cmd2.Cmd):
     def do_gather_win_logs(self,args):
         """Gather Security|System|Powershell event logs"""
         Gather.copy_evtx()        
+    
+    @cmd2.with_category(gather_information)
+    def do_gather_prefetch(self,args):
+        """Collect prefetch files from system"""
+        Gather.copy_prefetch()          
+    
+    @cmd2.with_category(gather_information)
+    def do_create_timeline(self,args):
+        """Collect data from multiple sources to form the timeline of events"""
+        Gather.create_timeline()      
  
         
 class Inspect_term(cmd2.Cmd):

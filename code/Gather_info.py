@@ -66,8 +66,21 @@ class Gather():
         subprocess.run("wevtutil epl System {}\System.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         subprocess.run("wevtutil epl Microsoft-Windows-PowerShell/Operational {}\Microsoft-Windows-PowerShel_Operational.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         
-
+    
+    def copy_prefetch():
+        tools("WinPrefetchView.exe",WinPrefetchView)
+        print(green+f"\n\t Collecting prefetching files to\n ==> {final_path}\\prefetch.html: \n"+reset)   
+    
+        subprocess.run(f"WinPrefetchView.exe /sverhtml {final_path}\prefetch.html",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        os.remove("WinPrefetchView.exe")
         
+    
+    def create_timeline():
+        tools("LastActivityView.exe",LastActivityView)
+        print(green+f"\n\t Creating timeline of events file to\n ==> {final_path}\\timeline.html: \n"+reset)   
+    
+        subprocess.run(f"LastActivityView.exe /sverhtml {final_path}\\timeline.html",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        os.remove("LastActivityView.exe")    
     
 class DeepBlue():    
     def deepBlue_security():
