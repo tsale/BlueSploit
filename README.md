@@ -39,7 +39,7 @@ Current stage of the project: <b>Pre-Alpha</b>
 <p><strong><span style="text-decoration: underline;">A big thanks to the below projects for their contribution to the InfoSec community:</span></strong></p>
 <ul>
 <li>DeepBlueCLI from Sans (<a href="https://github.com/sans-blue-team/DeepBlueCLI">https://github.com/sans-blue-team/DeepBlueCLI)</a>
-<li>Nirsoft for the amazing collection of tools (<a href="https://www.nirsoft.net/">https://www.nirsoft.net/)</a>
+<li>Nirsoft for the amazing collection of tools (<a href="https://www.nirsoft.net">https://www.nirsoft.net)</a>
 </li>
 </ul>
 <br><br>
