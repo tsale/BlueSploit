@@ -43,7 +43,7 @@ Current stage of the project: <b>Pre-Alpha</b>
 <li>DeepBlueCLI from Sans (<a href="https://github.com/sans-blue-team/DeepBlueCLI">https://github.com/sans-blue-team/DeepBlueCLI)</a>
 <li>Nirsoft for the amazing collection of tools (<a href="https://www.nirsoft.net">https://www.nirsoft.net)</a>
 </li>
-<li>Eric Zimmerman for his contribution with the forensic tools (<a href="https://ericzimmerman.github.io/">https://ericzimmerman.github.io</a>
+<li>Eric Zimmerman for his contribution with the forensic tools (<a href="https://ericzimmerman.github.io/">https://ericzimmerman.github.io)</a>
 </li>
 </ul>
 <br><br>
