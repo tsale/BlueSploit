@@ -5,6 +5,17 @@ import os
 import subprocess
 
 
+def hidecomands(self):
+    self.hidden_commands.append('py')
+    self.hidden_commands.append('set')
+    self.hidden_commands.append('shortcuts')
+    self.hidden_commands.append('macro')
+    self.hidden_commands.append('alias')
+    self.hidden_commands.append('run_script')
+    self.hidden_commands.append('run_pyscript')
+    self.hidden_commands.append('history')
+    self.hidden_commands.append('shell')     
+
 def modules():
     mods = {'gather':'Gather Information',
             'query':'Query Windows events',

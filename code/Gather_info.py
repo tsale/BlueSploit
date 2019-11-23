@@ -77,10 +77,35 @@ class Gather():
     
     def create_timeline():
         tools("LastActivityView.exe",LastActivityView)
-        print(green+f"\n\t Creating timeline of events file to\n ==> {final_path}\\timeline.html: \n"+reset)   
-    
-        subprocess.run(f"LastActivityView.exe /sverhtml {final_path}\\timeline.html",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        print(green+f"\n\t Creating timeline of events files to\n ==> {final_path}\\timeline\\timeline.(html/csv): \n"+reset)   
+        
+        os.mkdir(f"{final_path}\\timeline")
+        subprocess.run(f"LastActivityView.exe /sverhtml {final_path}\\timeline\\timeline.html",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        subprocess.run(f"LastActivityView.exe /scomma {final_path}\\timeline\\timeline.csv",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        
         os.remove("LastActivityView.exe")    
+        
+        
+    def collect_shellbags():
+        tools("CBECmd.exe",CBECmd)
+        user = input("Please enter the user name: ")
+        
+        print(green+f"\n\t Collecting ShellBags. Saving csv to directory\n ==> {final_path}\ShellBags: \n"+reset)   
+        
+        subprocess.run(f"""CBECmd.exe --csv {final_path}\\ShellBags -d C:\\Users\\{user}\\AppData\\Local\\Microsoft\\Windows --tz "Pacific Standard Time" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        
+        os.remove("CBECmd.exe")    
+        
+        
+    def browsingHistory():
+        tools("BrowsingHistoryView.exe",BrowsingHistoryView)
+        days = input("How many days worth of history would you like to collect?: ")
+        
+        print(green+f"\n\t Collecting browsing history. Saving csv to\n ==> {final_path}\BrowsingHistory.csv: \n"+reset)   
+        
+        subprocess.run(f"""BrowsingHistoryView.exe /HistorySource 1 /VisitTimeFilterType 3 /VisitTimeFilterValue {days} /LoadIE 1 /LoadFirefox 1 /LoadChrome 1 /LoadSafari 0 /sort ~2 /scomma {final_path}\\BrowsingHistory.csv""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        
+        os.remove("BrowsingHistoryView.exe")        
     
 class DeepBlue():    
     def deepBlue_security():
@@ -238,11 +263,19 @@ class Inspect():
         print(unicode)
         
         
-        args = "{}{}{}".format(ips,urls,unicode)
+        args = f"{ips}{urls}{unicode}"
         strings_exe = strings_exe.rsplit("\\",1)[-1]
         Files.mk_file("STRINGS-{}.txt".format(strings_exe),args)
         
         os.remove("strings.exe")
+        
+    def inspect_processes():
+        tools("pslist.exe",pslist)
+        plist = subprocess.run(f"pslist.exe -accepteula -t -nobanner",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        print(plist)
+        
+        Files.mk_file("running-processes.txt",plist) 
+        os.remove("pslist.exe")
     
 
 class Memory():

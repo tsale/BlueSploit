@@ -80,15 +80,8 @@ class Gather_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Gather #> '
-        self.hidden_commands.append('py')
-        self.hidden_commands.append('set')
-        self.hidden_commands.append('shortcuts')
-        self.hidden_commands.append('macro')
-        self.hidden_commands.append('alias')
-        self.hidden_commands.append('run_script')
-        self.hidden_commands.append('run_pyscript')
-        self.hidden_commands.append('history')
-        self.hidden_commands.append('shell')        
+        hidecomands(self)
+      
 
     gather_information = "Gather Information"
     
@@ -120,22 +113,24 @@ class Gather_term(cmd2.Cmd):
     @cmd2.with_category(gather_information)
     def do_create_timeline(self,args):
         """Collect data from multiple sources to form the timeline of events"""
-        Gather.create_timeline()      
+        Gather.create_timeline()    
+    
+    @cmd2.with_category(gather_information)
+    def do_gather_shellbags(self,args):
+        """Collect ShellBags from the specified user"""
+        Gather.collect_shellbags()    
+        
+    @cmd2.with_category(gather_information)
+    def do_gather_browsinghistory(self,args):
+        """Collect browsing history for all users"""
+        Gather.browsingHistory()          
  
         
 class Inspect_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Inspect #> '
-        self.hidden_commands.append('py')
-        self.hidden_commands.append('set')
-        self.hidden_commands.append('shortcuts')
-        self.hidden_commands.append('macro')
-        self.hidden_commands.append('alias')
-        self.hidden_commands.append('run_script')
-        self.hidden_commands.append('run_pyscript')
-        self.hidden_commands.append('history')
-        self.hidden_commands.append('shell')        
+        hidecomands(self)
 
     inspect_system = "Inspecting system for malicious artifacts on executables/processes/files/services"
     
@@ -152,7 +147,12 @@ class Inspect_term(cmd2.Cmd):
     @cmd2.with_category(inspect_system)
     def do_inspect_startup(self,args):
         """Inspect registry startup files and their locations"""
-        Inspect.inspect_startup()        
+        Inspect.inspect_startup()   
+        
+    @cmd2.with_category(inspect_system)
+    def do_inspect_processes(self,args):
+        """Inspect running processes"""
+        Inspect.inspect_processes()       
         
              
         
@@ -160,15 +160,7 @@ class Mem_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Memory #> '
-        self.hidden_commands.append('py')
-        self.hidden_commands.append('set')
-        self.hidden_commands.append('shortcuts')
-        self.hidden_commands.append('macro')
-        self.hidden_commands.append('alias')
-        self.hidden_commands.append('run_script')
-        self.hidden_commands.append('run_pyscript')
-        self.hidden_commands.append('history')
-        self.hidden_commands.append('shell')        
+        hidecomands(self)
 
     mem_tasks = "Memory Acquisition tasks"
     
@@ -182,15 +174,8 @@ class Remediation_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = 'Remediation #> '
-        self.hidden_commands.append('py')
-        self.hidden_commands.append('set')
-        self.hidden_commands.append('shortcuts')
-        self.hidden_commands.append('macro')
-        self.hidden_commands.append('alias')
-        self.hidden_commands.append('run_script')
-        self.hidden_commands.append('run_pyscript')
-        self.hidden_commands.append('history')
-        self.hidden_commands.append('shell')        
+        hidecomands(self)
+        
 
     remediation = "Remediate of threats found"
     
@@ -231,15 +216,8 @@ class BlueSploit(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.prompt = (Style.RESET_ALL + Style.BRIGHT  + Back.BLUE + "\nBlueSploit $> "+ Style.RESET_ALL +  Fore.GREEN)    
-        self.hidden_commands.append('py')
-        self.hidden_commands.append('set')
-        self.hidden_commands.append('shortcuts')
-        self.hidden_commands.append('macro')
-        self.hidden_commands.append('alias')
-        self.hidden_commands.append('run_script')
-        self.hidden_commands.append('run_pyscript')
-        self.hidden_commands.append('history')
-        self.hidden_commands.append('shell')
+        hidecomands(self)
+
         
     listmod = "List all available modules"    
     @cmd2.with_category(listmod)    
