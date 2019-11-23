@@ -276,6 +276,14 @@ class Inspect():
         
         Files.mk_file("running-processes.txt",plist) 
         os.remove("pslist.exe")
+        
+    def inspect_loggedonusers():
+        query = subprocess.run(f"query user",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        print(query)
+        Files.mk_file("LoggedOnUsers.txt",query) 
+
+        
+
     
 
 class Memory():

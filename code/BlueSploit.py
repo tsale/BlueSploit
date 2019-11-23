@@ -154,6 +154,11 @@ class Inspect_term(cmd2.Cmd):
         """Inspect running processes"""
         Inspect.inspect_processes()       
         
+    @cmd2.with_category(inspect_system)
+    def do_inspect_loggedOnUsers(self,args):
+        """Inspect Logged On Users"""
+        Inspect.inspect_loggedonusers()        
+        
              
         
 class Mem_term(cmd2.Cmd):
