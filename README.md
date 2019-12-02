@@ -28,6 +28,7 @@ Current stage of the project: <b>Pre-Alpha</b>
 <li>&#9745; Create timeline of events & and collect information for prefetch files (Using Nirsoft's tools)</li>
 <li>&#9745; Collect ShellBags of specified user (Using Eric Zimmerman's SBECmd tool)</li>
 <li>&#9745; Collect Browsing history (Using Using Nirsoft's tools)</li>
+<li>&#9745; Searching for malicious documents using Yara</li>
 <li>&#9744; Killing malicious processes/services found</li>
 <li>&#9744; Investigate suspicious network connections</li>
 <li>&#9744; Dump all Log-On/Off events</li>
