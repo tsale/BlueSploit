@@ -157,8 +157,22 @@ class Inspect_term(cmd2.Cmd):
     @cmd2.with_category(inspect_system)
     def do_inspect_loggedOnUsers(self,args):
         """Inspect Logged On Users"""
-        Inspect.inspect_loggedonusers()        
+        Inspect.inspect_loggedonusers()     
         
+        
+class Yara_term(cmd2.Cmd):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'yara #> '
+        hidecomands(self)
+
+    yara_search = "Looking into a specific directory(ies) for a match against the yara rules of your choise"
+    
+    
+    @cmd2.with_category(yara_search)
+    def do_yara_search(self,args):
+        """Yara search"""
+        Yara.yara_check()       
              
         
 class Mem_term(cmd2.Cmd):
@@ -207,6 +221,8 @@ class Remediation_term(cmd2.Cmd):
                          command='query')
 @cmd2_submenu.AddSubmenu(Gather_term(),
                          command='gather')
+@cmd2_submenu.AddSubmenu(Yara_term(),
+                         command='yara')
 class BlueSploit(cmd2.Cmd):
     intro = cmd2.style(""" \n ______  _               _____         _         _  _   
 | ___ \| |             /  ___|       | |       (_)| |  

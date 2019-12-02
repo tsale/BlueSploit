@@ -10,6 +10,7 @@ import pydoc
 from threading import Thread
 from tqdm import tqdm
 import time
+import shutil
 
 
 green = Fore.GREEN
@@ -19,6 +20,7 @@ curdir = os.getcwd()
 hostname = socket.gethostname()
 ntv_folder = Files.name_file("")
 final_path = curdir + "\\Investigations\\" + ntv_folder
+yara_path = f"{curdir}\\Investigations\\yara-rules"
 
 
 
@@ -233,10 +235,21 @@ class Inspect():
     
     def inspect_unsigned():
         print(green+"\n\tChecking for Unsigned executables on the system\n"+reset)
-        unsigned = subprocess.run("""powershell.exe "Get-ChildItem -Recurse c:\*.exe -ea ig| ForEach-object {Get-AuthenticodeSignature $_ -ea ig} | Where-Object {$_.status -ine 'Valid'}|Select Status,Path |findstr 'NotSigned' """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        print(unsigned)
+        unsigned1 = subprocess.run("""powershell.exe "Get-ChildItem -Recurse c:\\windows\\*.exe -ea ig| ForEach-object {Get-AuthenticodeSignature $_ -ea ig} | Where-Object {$_.status -ine 'Valid'}|Select Status,Path |findstr 'NotSigned'" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        unsigned2 = subprocess.run("""powershell.exe "Get-ChildItem -Recurse c:\\users\\*.exe -ea ig| ForEach-object {Get-AuthenticodeSignature $_ -ea ig} | Where-Object {$_.status -ine 'Valid'}|Select Status,Path |findstr 'NotSigned'" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         
-        Files.mk_file("UNSIGNED_EXEs.txt",unsigned)
+        print(unsigned1)
+        print(unsigned2)
+        
+        os.mkdir(f"{final_path}\\Unsigned_EXEs")
+
+        Files.mk_file("UNSIGNED_EXEs_WindowsDir.txt",unsigned1)
+        Files.mk_file("UNSIGNED_EXE_UsersDir.txt",unsigned2)
+        
+        shutil.move(f"{final_path}\\{Files.name_file('')}UNSIGNED_EXEs_WindowsDir.txt",f"{final_path}\\Unsigned_EXEs\\Unsigned_EXEs_WindowsDir.txt")
+        shutil.move(f"{final_path}\\{Files.name_file('')}UNSIGNED_EXE_UsersDir.txt",f"{final_path}\\Unsigned_EXEs\\Unsigned_EXEs_UsersDir.txt")
+
+
             
     
     def inspect_exe_strings():
@@ -283,8 +296,22 @@ class Inspect():
         Files.mk_file("LoggedOnUsers.txt",query) 
 
         
-
-    
+class Yara():
+    def yara_check():
+        tools("yara.exe",yara)
+        print(f"Please move the yara rules under {yara_path}")
+        rule_name = input("Enter the name(s) of yara rules to run: ")
+        rule_match_path = input("Enter the directory you want to search against: ") 
+        
+        yara_cmd = subprocess.run(f"yara.exe -r -s --no-warnings -f {yara_path}\\{rule_name} {rule_match_path}  2> nul",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        print(f"\n{yara_cmd}")
+        
+        if yara:
+            Files.mk_file("Yara_matches.txt",yara_cmd)
+            print("\nWe have a match!")
+        else:
+            print("No matches found!")
+        
 
 class Memory():
     def mem_capture():

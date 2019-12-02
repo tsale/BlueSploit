@@ -22,13 +22,14 @@ def modules():
             'network':'Show current network information',
             'memory':'Memory forensics',
             'inspect':'Inspect system for malicious artifacts',
+            'yara':'Use Yara to search for malicious artifacts',
             'remediate':'Remediate of threats found'}
     
     for k,v in mods.items():
         print(f"\t{k}\t\t\t=>\t\t{v}")
 
 
-            
+           
 class Files():
     def name_file(name):
         timestr = time.strftime("%m-%d-%Y-")
@@ -42,8 +43,9 @@ class Files():
         f.write(*args)
         f.close()
         
-    
+
         
 
 os.makedirs("Investigations/{}".format(Files.name_file("")),exist_ok=True)
+os.makedirs("Investigations/yara-rules",exist_ok=True)
 subprocess.call("powershell.exe $ErrorActionPreference= 'silentlycontinue'",shell=True)
