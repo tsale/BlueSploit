@@ -14,7 +14,7 @@ The current implementation is focused on Windows environments. Some of the power
 <br>
 <p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/netstat_listening.PNG" alt="" /></p>
 
-Current stage of the project: <b>Pre-Alpha</b> 
+Current stage of the project: <b>Beta</b> 
 <br> <br> 
 
 <p><span style="text-decoration: underline;"><strong>Upcoming Features:</strong></span></p>
