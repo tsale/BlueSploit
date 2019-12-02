@@ -71,7 +71,7 @@ class Gather():
         tools("WinPrefetchView.exe",WinPrefetchView)
         print(green+f"\n\t Collecting prefetching files to\n ==> {final_path}\\prefetch.html: \n"+reset)   
     
-        subprocess.run(f"WinPrefetchView.exe /sverhtml {final_path}\prefetch.html",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        subprocess.run(f"""WinPrefetchView.exe /sort "~Modified Time" /sverhtml {final_path}\prefetch.html""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         os.remove("WinPrefetchView.exe")
         
     
