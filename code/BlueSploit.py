@@ -28,7 +28,7 @@ class Network_term(cmd2.Cmd):
         
     @cmd2.with_category(Network)
     def do_packet_capture(self,args):  
-        """Capturing a packet"""
+        """Live packet capture"""
         Network.packet_capture()    
     
     @cmd2.with_category(Network)
@@ -36,14 +36,14 @@ class Network_term(cmd2.Cmd):
         Network.netstat_listening()
     
     @cmd2.with_category(Network)
-    def do_dns_checks(self,args):  
+    def do_dns_cache(self,args):  
         Network.dns_checks()        
 
 
 class Query_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prompt = 'Query #> '
+        self.prompt = 'Query_WinEvents #> '
         self.hidden_commands.append('py')
         self.hidden_commands.append('set')
         self.hidden_commands.append('shortcuts')
@@ -57,17 +57,17 @@ class Query_term(cmd2.Cmd):
     Query_WinEvents = "Query Windows events"
     
     @cmd2.with_category(Query_WinEvents)
-    def do_check_deep_security(self,args):
+    def do_check_security(self,args):
         """Check for suspicious security windows events"""
         DeepBlue.deepBlue_security()
         
     @cmd2.with_category(Query_WinEvents)
-    def do_check_deep_system(self,args):
+    def do_check_system(self,args):
         """Check for suspicious system windows events"""
         DeepBlue.deepBlue_system()        
 
     @cmd2.with_category(Query_WinEvents)
-    def do_check_deep_powershell(self,args):
+    def do_check_powershell(self,args):
         """Check for suspicious powershell windows events"""
         DeepBlue.deepBlue_powershell() 
         
@@ -76,10 +76,10 @@ class Query_term(cmd2.Cmd):
 
 
 
-class Gather_term(cmd2.Cmd):
+class SysInfo_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prompt = 'Gather #> '
+        self.prompt = 'SysInfo #> '
         hidecomands(self)
       
 
@@ -206,9 +206,32 @@ class Remediation_term(cmd2.Cmd):
     @cmd2.with_category(remediation)
     def do_remediate_ip(self,args):
         """Remediation of malicious IP"""
-        Remediation.block_ip()        
+        Remediation.block_ip()   
 
+class Remote_term(cmd2.Cmd):   
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'houseKeeping #> '
+        hidecomands(self)
+    
+    housekeeping = "House Keeping commands to execute in the end of the investigation"
+            
+    @cmd2.with_category(housekeeping)
+    def do_zip_investigation(self,args):
+        """Zipping investigation folder"""
+        Remote.zipfiles()  
+        
+    def do_copy2remote(self,args):
+        """Coppying investigation zip file to remote host"""
+        Remote.copyfiles()
+    
+    def do_cleanup(self,args):
+        """Deleting investigation and files"""
+        Remote.cleanup()     
+    
 
+@cmd2_submenu.AddSubmenu(Remote_term(),
+                         command='housekeeping')
 @cmd2_submenu.AddSubmenu(Remediation_term(),
                          command='remediate')
 @cmd2_submenu.AddSubmenu(Mem_term(),
@@ -218,9 +241,9 @@ class Remediation_term(cmd2.Cmd):
 @cmd2_submenu.AddSubmenu(Network_term(),
                          command='network')
 @cmd2_submenu.AddSubmenu(Query_term(),
-                         command='query')
-@cmd2_submenu.AddSubmenu(Gather_term(),
-                         command='gather')
+                         command='query_win_events')
+@cmd2_submenu.AddSubmenu(SysInfo_term(),
+                         command='sysinfo')
 @cmd2_submenu.AddSubmenu(Yara_term(),
                          command='yara')
 class BlueSploit(cmd2.Cmd):

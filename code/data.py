@@ -17,16 +17,17 @@ def hidecomands(self):
     self.hidden_commands.append('shell')     
 
 def modules():
-    mods = {'gather':'Gather Information',
-            'query':'Query Windows events',
+    mods = {'sysInfo':'Gather Information',
             'network':'Show current network information',
             'memory':'Memory forensics',
             'inspect':'Inspect system for malicious artifacts',
             'yara':'Use Yara to search for malicious artifacts',
-            'remediate':'Remediate of threats found'}
+            'remediate':'Remediate of threats found' ,           
+            'query_win_events':'Query Windows events',
+            'houseKeeping':'House Keeping commands'}            
     
     for k,v in mods.items():
-        print(f"\t{k}\t\t\t=>\t\t{v}")
+        print(f"\t{k} =>\t\t{v}")
 
 
            

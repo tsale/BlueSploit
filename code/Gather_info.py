@@ -7,8 +7,6 @@ import re
 from scapy.all import sniff
 from scapy.all import wrpcap
 import pydoc
-from threading import Thread
-from tqdm import tqdm
 import time
 import shutil
 
@@ -316,7 +314,7 @@ class Yara():
 class Memory():
     def mem_capture():
         tools("magnet.exe",magnet)
-        name = "Investigations\{}\{}_Memory-Capture.raw".format(Files.name_file(""),socket.gethostname())
+        name = f"{final_path}_Memory-Capture.raw"
         print(name)
         
         print(green+"\n\tCapturing memory:\n"+reset)
@@ -335,3 +333,22 @@ class Remediation():
         subprocess.call("""powershell.exe "New-NetFirewallRule -DisplayName "Block_Malicious_IP" -Direction Outbound -LocalPort Any -Protocol TCP -Action Block -RemoteAddress {}" """.format(ip),shell=True)
         print("\n{} ip is now blocked".format(ip))
     
+
+class Remote():
+    def zipfiles():
+        filename = f"Investigation-{socket.gethostname()}"
+        shutil.make_archive(f"{filename}", 'zip', f'{os.getcwd()}\\Investigations') 
+        
+    def copyfiles():
+        filename = f"Investigation-{socket.gethostname()}.zip"
+        target = input("Which host do you want to copy the files to (IP/hostname): ")
+        subprocess.run(f"""xcopy {filename} \\\\{target}\c$\{filename}" """)
+        
+    def cleanup():
+        filename = f"Investigation-{socket.gethostname()}.zip"
+        try:
+            os.remove(f"{filename}")
+        except:
+            pass
+        shutil.rmtree("Investigations")
+        
