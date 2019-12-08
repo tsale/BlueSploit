@@ -10,7 +10,7 @@ The current implementation is focused on Windows environments. Some of the power
 <p>Download the latest <a href="https://github.com/tsale/BlueSploit/releases">release</a>&nbsp;for windows.</p>
 <br>
 
-![](PNGs/BlueSploit.gif)
+<p><video src="PNGs/BlueSploit.mp4"</video>
 <br>
 <p><img src="https://github.com/tsale/BlueSploit/blob/master/PNGs/netstat_listening.PNG" alt="" /></p>
 
