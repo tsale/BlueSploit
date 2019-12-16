@@ -1,15 +1,15 @@
-import subprocess
 from colorama import Fore
 from data import *
-import socket,os,sys
 from file import *
-import re
 from scapy.all import sniff
 from scapy.all import wrpcap
+import subprocess
+import socket,os,sys
+import re
 import pydoc
 import time
 import shutil
-
+import hashlib
 
 green = Fore.GREEN
 reset = Fore.RESET
@@ -22,7 +22,31 @@ yara_path = f"{curdir}\\Investigations\\yara-rules"
 
 
 
+
 class Gather():
+    def hash_files():
+        
+        file_path = input("Insert the complete file path of the file to hash: ")
+        
+        BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
+        md5 = hashlib.md5()
+        sha1 = hashlib.sha1()
+        sha256 = hashlib.sha256()
+        
+        with open(file_path, 'rb') as f:
+            while True:
+                data = f.read(BUF_SIZE)
+                if not data:
+                    break
+                md5.update(data)
+                sha1.update(data)
+                sha256.update(data)
+        
+        print("\nMD5: {0}".format(md5.hexdigest()))
+        print("SHA1: {0}".format(sha1.hexdigest()))
+        print("SHA256: {0}".format(sha256.hexdigest()))        
+    
+    
     def systeminfo():
         ## run and print systeminfo results
         tools("psinfo.exe",psinfo)
@@ -309,7 +333,6 @@ class Yara():
             print("\nWe have a match!")
         else:
             print("No matches found!")
-        
 
 class Memory():
     def mem_capture():

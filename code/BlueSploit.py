@@ -229,6 +229,18 @@ class Remote_term(cmd2.Cmd):
         """Deleting investigation and files"""
         Remote.cleanup()     
     
+class Hash_term(cmd2.Cmd):   
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'Hash #> '
+        hidecomands(self)
+        
+    hash_file = "Choose any files to hash"
+
+    @cmd2.with_category(hash_file)    
+    def do_hash_file(self,args):
+        """Hash any file"""
+        Gather.hash_files()  
 
 @cmd2_submenu.AddSubmenu(Remote_term(),
                          command='housekeeping')
@@ -246,6 +258,8 @@ class Remote_term(cmd2.Cmd):
                          command='sysinfo')
 @cmd2_submenu.AddSubmenu(Yara_term(),
                          command='yara')
+@cmd2_submenu.AddSubmenu(Hash_term(),
+                         command='hash')
 class BlueSploit(cmd2.Cmd):
     intro = cmd2.style(""" \n ______  _               _____         _         _  _   
 | ___ \| |             /  ___|       | |       (_)| |  

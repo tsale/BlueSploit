@@ -103,3 +103,9 @@ venv.bak/
 # mypy
 .mypy_cache/
 README.html
+code/setup.py
+code/yara.exe
+code/yara_rules.py
+*.txt
+code/Investigations/Bluesploit_12-15-2019-DESKTOP-M3DH4MC_/yara_results.csv
+code/Investigations/yara-rules/test.yar
