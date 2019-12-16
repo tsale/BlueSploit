@@ -325,10 +325,10 @@ class Yara():
         rule_name = input("Enter the name(s) of yara rules to run: ")
         rule_match_path = input("Enter the directory you want to search against: ") 
         
-        yara_cmd = subprocess.run(f"yara.exe -r -s --no-warnings -f {yara_path}\\{rule_name} {rule_match_path}  2> nul",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        yara_cmd = subprocess.run(f"yara.exe -r -s --no-warnings -f {yara_path}\\{rule_name} {rule_match_path}  2> nul ",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(f"\n{yara_cmd}")
         
-        if yara:
+        if yara_cmd:
             Files.mk_file("Yara_matches.txt",yara_cmd)
             print("\nWe have a match!")
         else:
