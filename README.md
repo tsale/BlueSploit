@@ -24,13 +24,13 @@ Current stage of the project: <b>Beta</b>
 <li>&#9745; Memory captures</li>
 <li>&#9745; Live packet cptures</li>
 <li>&#9745; Use of Strings to inspect executables</li>
-<li>&#9745; Create files with every command run (under <i>"Investigation"</i> folder)</li>
 <li>&#9745; Short term re-mediation of malicious artifact</li>
 <li>&#9745; Blocking/Unblocking IPs</li>
 <li>&#9745; Create timeline of events & and collect information for prefetch files (Using Nirsoft's tools)</li>
 <li>&#9745; Collect ShellBags of specified user (Using Eric Zimmerman's SBECmd tool)</li>
 <li>&#9745; Collect Browsing history (Using Using Nirsoft's tools)</li>
 <li>&#9745; Searching for malicious documents using Yara</li>
+<li>&#9745; Extract/Defang IOCs</li>
 <li>&#9744; Killing malicious processes/services found</li>
 <li>&#9744; Investigate suspicious network connections</li>
 <li>&#9744; Dump all Log-On/Off events</li>
