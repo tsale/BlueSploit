@@ -3,7 +3,6 @@ from Gather_info import *
 from data import *
 from colorama import Fore, Back, Style
 import cmd2_submenu
-
         
 
 class Network_term(cmd2.Cmd):
@@ -76,55 +75,29 @@ class Query_term(cmd2.Cmd):
 
 
 
-class SysInfo_term(cmd2.Cmd):
+class System_Info_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.prompt = 'SysInfo #> '
+        self.prompt = 'System_Info #> '
         hidecomands(self)
       
 
-    gather_information = "Gather Information"
+    system_information = "View system information"
     
       
-
-    @cmd2.with_category(gather_information)
+    @cmd2.with_category(system_information)
     def do_gather_sysinfo(self,args):
         """Gather system information"""
         Gather.systeminfo()
           
          
 
-    @cmd2.with_category(gather_information)
+    @cmd2.with_category(system_information)
     def do_gather_usersinfo(self,args):
         """Gather local user information"""
         Gather.local_usersinfo()
-        
-        
-    @cmd2.with_category(gather_information)
-    def do_gather_win_logs(self,args):
-        """Gather Security|System|Powershell event logs"""
-        Gather.copy_evtx()        
+            
     
-    @cmd2.with_category(gather_information)
-    def do_gather_prefetch(self,args):
-        """Collect prefetch files from system"""
-        Gather.copy_prefetch()          
-    
-    @cmd2.with_category(gather_information)
-    def do_create_timeline(self,args):
-        """Collect data from multiple sources to form the timeline of events"""
-        Gather.create_timeline()    
-    
-    @cmd2.with_category(gather_information)
-    def do_gather_shellbags(self,args):
-        """Collect ShellBags from the specified user"""
-        Gather.collect_shellbags()    
-        
-    @cmd2.with_category(gather_information)
-    def do_gather_browsinghistory(self,args):
-        """Collect browsing history for all users"""
-        Gather.browsingHistory()          
- 
         
 class Inspect_term(cmd2.Cmd):
     def __init__(self, *args, **kwargs):
@@ -241,7 +214,68 @@ class Hash_term(cmd2.Cmd):
     def do_hash_file(self,args):
         """Hash any file"""
         Gather.hash_files()  
+        
+class IOC_term(cmd2.Cmd):   
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'IOCs #> '
+        hidecomands(self)
+        
+    _ioc = "Extract/defang IOCs"
 
+    @cmd2.with_category(_ioc)    
+    def do_extract_IOCs(self,args):
+        """Extract and defang IOCs from files"""
+        IOC.extract_iocs() 
+        
+    @cmd2.with_category(_ioc)    
+    def do_defang_IOCs(self,args):
+        """Defang typed IOC"""
+        IOC.defang_iocs()
+       
+class Collect_term(cmd2.Cmd):   
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.prompt = 'collect #> '
+        hidecomands(self)
+        
+    _collect = "Collect file system artifacts"
+
+    @cmd2.with_category(_collect)
+    def do_collect_win_logs(self,args):
+        """Collect Security|System|Powershell event logs"""
+        Collect.collect_evtx() 
+        
+    @cmd2.with_category(_collect)
+    def do_collect_prefetch(self,args):
+        """Collect prefetch files from system"""
+        Collect.copy_prefetch()          
+    
+    @cmd2.with_category(_collect)
+    def do_create_timeline(self,args):
+        """Collect data from multiple sources to form the timeline of events"""
+        Collect.create_timeline()    
+    
+    @cmd2.with_category(_collect)
+    def do_collect_shellbags(self,args):
+        """Collect ShellBags from the specified user"""
+        Collect.collect_shellbags()    
+        
+    @cmd2.with_category(_collect)
+    def do_collect_browsinghistory(self,args):
+        """Collect browsing history for all users"""
+        Collect.browsingHistory() 
+        
+    @cmd2.with_category(_collect)
+    def do_collect_file(self,args):
+        """Collect suspicious files (copying the file into the "investigations" folder"""
+        Collect.copy_file()      
+    
+        
+@cmd2_submenu.AddSubmenu(Collect_term(),
+                         command='collect')        
+@cmd2_submenu.AddSubmenu(IOC_term(),
+                         command='IOC')
 @cmd2_submenu.AddSubmenu(Remote_term(),
                          command='housekeeping')
 @cmd2_submenu.AddSubmenu(Remediation_term(),
@@ -254,7 +288,7 @@ class Hash_term(cmd2.Cmd):
                          command='network')
 @cmd2_submenu.AddSubmenu(Query_term(),
                          command='query_win_events')
-@cmd2_submenu.AddSubmenu(SysInfo_term(),
+@cmd2_submenu.AddSubmenu(System_Info_term(),
                          command='sysinfo')
 @cmd2_submenu.AddSubmenu(Yara_term(),
                          command='yara')

@@ -109,3 +109,5 @@ code/yara_rules.py
 *.txt
 code/Investigations/Bluesploit_12-15-2019-DESKTOP-M3DH4MC_/yara_results.csv
 code/Investigations/yara-rules/test.yar
+code/Investigations/Bluesploit_12-16-2019-DESKTOP-M3DH4MC_/Bluesploit_12-16-2019-DESKTOP-M3DH4MC_hashed_files
+code/test.py

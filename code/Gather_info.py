@@ -10,6 +10,8 @@ import pydoc
 import time
 import shutil
 import hashlib
+import iocextract
+
 
 green = Fore.GREEN
 reset = Fore.RESET
@@ -42,10 +44,10 @@ class Gather():
                 sha1.update(data)
                 sha256.update(data)
         
-        print("\nMD5: {0}".format(md5.hexdigest()))
-        print("SHA1: {0}".format(sha1.hexdigest()))
-        print("SHA256: {0}".format(sha256.hexdigest()))        
-    
+        hashed_fl = f"\nFile: {file_path}\nMD5: {md5.hexdigest()}\nSHA1: {sha1.hexdigest()}\nSHA256: {sha256.hexdigest()}\n"       
+        print(hashed_fl)
+        
+        Files.mk_file("hashed_files.txt",hashed_fl)
     
     def systeminfo():
         ## run and print systeminfo results
@@ -72,64 +74,12 @@ class Gather():
         print(localAdmins)
         
         ## Write results to file
-        args = ("{}{}".format(userInfo,localAdmins))
+        args = (f"{userInfo}{localAdmins}")
         Files.mk_file("USER-INFO.txt",args)
         
         return(userInfo,localAdmins)
     
-    def copy_evtx():
-        print(green+"\n\t Copying Security|System|Powershell events to:\n ==> {}\\evtx_logs: \n".format(final_path)+reset)   
-        try:
-            os.makedirs("{}\\evtx_logs".format(final_path))
-        except:
-            pass
-        fin_path = "{}\\evtx_logs".format(final_path)
         
-        
-        subprocess.run("wevtutil epl Security {}\Security.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        subprocess.run("wevtutil epl System {}\System.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        subprocess.run("wevtutil epl Microsoft-Windows-PowerShell/Operational {}\Microsoft-Windows-PowerShel_Operational.evtx\n".format(fin_path),shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        
-    
-    def copy_prefetch():
-        tools("WinPrefetchView.exe",WinPrefetchView)
-        print(green+f"\n\t Collecting prefetching files to\n ==> {final_path}\\prefetch.html: \n"+reset)   
-    
-        subprocess.run(f"""WinPrefetchView.exe /sort "~Modified Time" /sverhtml {final_path}\prefetch.html""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        os.remove("WinPrefetchView.exe")
-        
-    
-    def create_timeline():
-        tools("LastActivityView.exe",LastActivityView)
-        print(green+f"\n\t Creating timeline of events files to\n ==> {final_path}\\timeline\\timeline.(html/csv): \n"+reset)   
-        
-        os.mkdir(f"{final_path}\\timeline")
-        subprocess.run(f"LastActivityView.exe /sverhtml {final_path}\\timeline\\timeline.html",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        subprocess.run(f"LastActivityView.exe /scomma {final_path}\\timeline\\timeline.csv",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        
-        os.remove("LastActivityView.exe")    
-        
-        
-    def collect_shellbags():
-        tools("CBECmd.exe",CBECmd)
-        user = input("Please enter the user name: ")
-        
-        print(green+f"\n\t Collecting ShellBags. Saving csv to directory\n ==> {final_path}\ShellBags: \n"+reset)   
-        
-        subprocess.run(f"""CBECmd.exe --csv {final_path}\\ShellBags -d C:\\Users\\{user}\\AppData\\Local\\Microsoft\\Windows --tz "Pacific Standard Time" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        
-        os.remove("CBECmd.exe")    
-        
-        
-    def browsingHistory():
-        tools("BrowsingHistoryView.exe",BrowsingHistoryView)
-        days = input("How many days worth of history would you like to collect?: ")
-        
-        print(green+f"\n\t Collecting browsing history. Saving csv to\n ==> {final_path}\BrowsingHistory.csv: \n"+reset)   
-        
-        subprocess.run(f"""BrowsingHistoryView.exe /HistorySource 1 /VisitTimeFilterType 3 /VisitTimeFilterValue {days} /LoadIE 1 /LoadFirefox 1 /LoadChrome 1 /LoadSafari 0 /sort ~2 /scomma {final_path}\\BrowsingHistory.csv""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        
-        os.remove("BrowsingHistoryView.exe")        
     
 class DeepBlue():    
     def deepBlue_security():
@@ -189,13 +139,13 @@ class Network():
     
     def netstat_listening():    
         print(green+"\n\tListening processes(brief):"+reset)
-        listening_processes = subprocess.run("""powershell.exe "netstat -ano | findstr -i listening | ForEach-Object { $_ -split '\s+|\t+' } | findstr /r '^[1-9+]*$' | sort | unique | ForEach-Object { Get-Process -Id $_ } | Select ProcessName,Path,Company,Description | Format-Table -Autosize | Out-String -Width 4096" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        listening_processes = subprocess.run("""powershell.exe "netstat -ano | findstr -i listening | ForEach-Object { $_ -split '\s+|\t+' } | findstr /r '^[1-9+]*$' | sort | unique | ForEach-Object { Get-Process -Id $_ } | Select ProcessName,Path,Company,Description | Format-Table -Autosize | Out-String -Width 4096 | ConvertTo-CSV -Delimiter "`t" -NoTypeInformation | % { $_ -replace "`"" } | Set-Content netstat.csv" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(listening_processes)
         
         net_info = subprocess.run("""powershell.exe "Get-NetTCPConnection -State Established|? RemoteAddress -NotLike '127.*'| Select RemoteAddress, RemotePort, OwningProcess, @{n='Path';e={(gps -Id $_.OwningProcess).Path}},@{n='Hash';e={(gps -Id $_.OwningProcess|gi|filehash).hash}}, @{n='User';e={(gps -Id $_.OwningProcess -IncludeUserName).UserName}}|sort|gu -AS|FT -Autosize | Out-String -Width 4096"  """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(green+"\n\n\tNetwork connections for running executable(Detailed):\n"+reset)
         print(net_info)
-        args = "{}{}".format(listening_processes,net_info)
+        args = f"{listening_processes}{net_info}"
         Files.mk_file("NETSTAT-LISTENING_PROCESSES.txt",args)
         
         return(listening_processes,net_info)        
@@ -208,7 +158,7 @@ class Network():
     
     def packet_capture():
         show_int = subprocess.run("netsh interface show interface",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
-        interface = input("Choose from below interfaces:\n {} (Case sensitive) -->  ".format(show_int))
+        interface = input(f"Choose from below interfaces:\n {show_int} (Case sensitive) -->  ")
         
         while True:
             try:
@@ -217,18 +167,14 @@ class Network():
             except:
                 print("Please insert an integer number\n")
         
-   
-        #run_time = run_time *60     
-
-        #num = run_time / 100 
-        
+      
 
             
         try:
-            print(green+"\nCreating PCAP under: {}\\{}.pcap\n\nCheck back in {} minutes from now.\nExecution time:({})\n".format(final_path,hostname,run_time,time.ctime())+reset)
+            print(green+f"\nCreating PCAP under: {final_path}\\{hostname}.pcap\n\nCheck back in {run_time} minutes from now.\nExecution time:({time.ctime()})\n"+reset)
             run_time = run_time *60   
             pakts_list = sniff(timeout=run_time,iface=interface)
-            wrpcap('{}\\{}.pcap'.format(final_path,hostname),pakts_list)                         
+            wrpcap(f'{final_path}\\{hostname}.pcap',pakts_list)                         
 
         except:
             ans_np = input("Npcap is not installed, do you want to install it?(y/n): ")
@@ -252,7 +198,7 @@ class Inspect():
         startup = subprocess.run("""powershell.exe "Get-CimInstance Win32_StartupCommand | Select-Object Name, command, Location, User | Format-Table -Autosize | Out-String -Width 4096 " """,shell=False,stdout=subprocess.PIPE).stdout.decode('utf-8')
         print(run)
         
-        args = "{}".format(startup)
+        args = f"{startup}"
         Files.mk_file("STARTUP_FILES.txt",args)    
     
     def inspect_unsigned():
@@ -277,30 +223,30 @@ class Inspect():
     def inspect_exe_strings():
         tools("strings.exe",strings)
         strings_exe = input(green+"Insert executable including its path: (e.g. C:\malicious.exe ): ")
-        strings_cmd = subprocess.check_output("""strings.exe -n 10 "{}" """.format(strings_exe)).decode('utf-8')
+        strings_cmd = subprocess.check_output(f"""strings.exe -n 10 "{strings_exe}" """.decode('utf-8'))
         strings_cmd = strings_cmd.replace("\n", " ")
         strings_cmd = strings_cmd.replace("\r", " ")          
         
         
         ips = re.findall('[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*',strings_cmd)
-        ips = ("\nLooking for IPs from {}\n{}\n".format(strings_exe,ips)) 
+        ips = (f"\nLooking for IPs from {strings_exe}\n{ips}\n") 
         print(ips)
         time.sleep(2)
 
         
         urls = re.findall('http[s]?:\/\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',strings_cmd)
-        urls = ("\nLooking for URLs from {}\n{}\n\n".format(strings_exe,urls)) 
+        urls = (f"\nLooking for URLs from {strings_exe}\n{urls}\n\n") 
         print(urls)
         time.sleep(2)
         
-        unicode = subprocess.check_output("""strings.exe -nobanner -n 5 -u {}" """.format(strings_exe)).decode('utf-8')
-        unicode = ("\nLooking for UNICODE from {}\n\n{}".format(strings_exe,unicode)) 
+        unicode = subprocess.check_output(f"""strings.exe -nobanner -n 5 -u {strings_exe}" """.decode('utf-8'))
+        unicode = (f"\nLooking for UNICODE from {strings_exe}\n\n{unicode}") 
         print(unicode)
         
         
         args = f"{ips}{urls}{unicode}"
         strings_exe = strings_exe.rsplit("\\",1)[-1]
-        Files.mk_file("STRINGS-{}.txt".format(strings_exe),args)
+        Files.mk_file(f"STRINGS-{strings_exe}.txt",args)
         
         os.remove("strings.exe")
         
@@ -341,20 +287,20 @@ class Memory():
         print(name)
         
         print(green+"\n\tCapturing memory:\n"+reset)
-        subprocess.call("""magnet.exe /accepteula /go "{}" """.format(name),shell=True)
+        subprocess.call(f"""magnet.exe /accepteula /go "{name}" """,shell=True)
         os.remove("magnet.exe")
         
         
 class Remediation():
     def block_domain():
         domain = input("Enter domain (no asterisk allowed) to block: ")
-        subprocess.call("""powershell.exe "Add-Content C:\Windows\System32\drivers\etc\hosts "`n127.0.0.1 {}" """.format(domain),shell=True)
-        print("\n{} domain is now blocked".format(domain))
+        subprocess.call(f"""powershell.exe "Add-Content C:\Windows\System32\drivers\etc\hosts "`n127.0.0.1 {domain}" """,shell=True)
+        print(f"\n{domain} domain is now blocked")
         
     def block_ip():
         ip = input("Enter IP to block: ")
         subprocess.call("""powershell.exe "New-NetFirewallRule -DisplayName "Block_Malicious_IP" -Direction Outbound -LocalPort Any -Protocol TCP -Action Block -RemoteAddress {}" """.format(ip),shell=True)
-        print("\n{} ip is now blocked".format(ip))
+        print(f"\n{ip} ip is now blocked")
     
 
 class Remote():
@@ -375,3 +321,86 @@ class Remote():
             pass
         shutil.rmtree("Investigations")
         
+        
+class IOC():
+    def extract_iocs():
+        file = input("File you want to extract IOCs from(full file path): ")
+        iocs = []
+        with open(file, "r") as f:
+            f = f.read()
+            print("\nIOCs extracted:\n")
+            for everything in iocextract.extract_iocs(f):
+                iocs.append(iocextract.defang(everything))
+                print(iocextract.defang(everything))
+        iocs = "\n".join(iocs)
+        Files.mk_file("extract_iocs.txt",iocs)
+        
+    def defang_iocs():
+        ioc = input("URL or IP you want to defang: ")
+        print(f"\n{iocextract.defang(ioc)}")
+        
+      
+class Collect:
+    def collect_evtx():
+        print(green+f"\n\t Copying Security|System|Powershell events to:\n ==> {final_path}\\evtx_logs: \n"+reset)   
+        try:
+            os.makedirs(f"{final_path}\\evtx_logs")
+        except:
+            pass
+        fin_path = f"{final_path}\\evtx_logs"
+        
+        
+        subprocess.run(f"wevtutil epl Security {fin_path}\Security.evtx\n",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        subprocess.run(f"wevtutil epl System {fin_path}\System.evtx\n",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        subprocess.run(f"wevtutil epl Microsoft-Windows-PowerShell/Operational {fin_path}\Microsoft-Windows-PowerShel_Operational.evtx\n",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')    
+     
+   
+    def copy_prefetch():
+        tools("WinPrefetchView.exe",WinPrefetchView)
+        print(green+f"\n\t Collecting prefetching files to\n ==> {final_path}\\prefetch.html: \n"+reset)   
+    
+        subprocess.run(f"""WinPrefetchView.exe /sort "~Modified Time" /sverhtml {final_path}\prefetch.html""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        os.remove("WinPrefetchView.exe")
+        
+    
+    def create_timeline():
+        tools("LastActivityView.exe",LastActivityView)
+        print(green+f"\n\t Creating timeline of events files to\n ==> {final_path}\\timeline\\timeline.(html/csv): \n"+reset)   
+        
+        os.mkdir(f"{final_path}\\timeline")
+        subprocess.run(f"LastActivityView.exe /sverhtml {final_path}\\timeline\\timeline.html",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        subprocess.run(f"LastActivityView.exe /scomma {final_path}\\timeline\\timeline.csv",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        
+        os.remove("LastActivityView.exe")    
+        
+        
+    def collect_shellbags():
+        tools("CBECmd.exe",CBECmd)
+        user = input("Please enter the user name: ")
+        
+        print(green+f"\n\t Collecting ShellBags. Saving csv to directory\n ==> {final_path}\ShellBags: \n"+reset)   
+        
+        subprocess.run(f"""CBECmd.exe --csv {final_path}\\ShellBags -d C:\\Users\\{user}\\AppData\\Local\\Microsoft\\Windows --tz "Pacific Standard Time" """,shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        
+        os.remove("CBECmd.exe")    
+        
+        
+    def browsingHistory():
+        tools("BrowsingHistoryView.exe",BrowsingHistoryView)
+        days = input("How many days worth of history would you like to collect?: ")
+        
+        print(green+f"\n\t Collecting browsing history. Saving csv to\n ==> {final_path}\BrowsingHistory.csv: \n"+reset)   
+        
+        subprocess.run(f"""BrowsingHistoryView.exe /HistorySource 1 /VisitTimeFilterType 3 /VisitTimeFilterValue {days} /LoadIE 1 /LoadFirefox 1 /LoadChrome 1 /LoadSafari 0 /sort ~2 /scomma {final_path}\\BrowsingHistory.csv""",shell=True,stdout=subprocess.PIPE).stdout.decode('utf-8')
+        
+        os.remove("BrowsingHistoryView.exe")            
+        
+    
+    def copy_file():
+        file = input("Type the file you want to copy(full file path): ")
+        _final_path = final_path + "\\collected_files"
+        try:
+            os.mkdir(f"{final_path}\\collected_files")
+        except:
+            pass
+        shutil.copy2(file, _final_path)      #shutil.copy2 will attempts to preserve all the source file's metadata
