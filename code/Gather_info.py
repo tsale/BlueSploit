@@ -11,9 +11,11 @@ import time
 import shutil
 import hashlib
 import iocextract
+import csv
 
 
 green = Fore.GREEN
+yellow = Fore.YELLOW
 reset = Fore.RESET
 red = Fore.RED
 curdir = os.getcwd()
@@ -27,7 +29,6 @@ yara_path = f"{curdir}\\Investigations\\yara-rules"
 
 class Gather():
     def hash_files():
-        
         file_path = input("Insert the complete file path of the file to hash: ")
         
         BUF_SIZE = 65536  # lets read stuff in 64kb chunks!
@@ -44,10 +45,36 @@ class Gather():
                 sha1.update(data)
                 sha256.update(data)
         
-        hashed_fl = f"\nFile: {file_path}\nMD5: {md5.hexdigest()}\nSHA1: {sha1.hexdigest()}\nSHA256: {sha256.hexdigest()}\n"       
+        hashed_fl = f"\nFile: {green}{file_path}\nMD5: {md5.hexdigest()}\nSHA1: {sha1.hexdigest()}\nSHA256: {sha256.hexdigest()}\n"       
         print(hashed_fl)
         
         Files.mk_file("hashed_files.txt",hashed_fl)
+        
+    
+    def hash_directory():
+        file_path = input("Directory of files to hash: ")
+        dir_name = os.path.basename(file_path)
+        mydict = {}
+        for root, dirs,files in os.walk(file_path, topdown=True):
+            for name in files:
+                FileName = (os.path.join(root, name))
+        
+                hasher = hashlib.sha256()
+                with open(str(FileName), 'rb') as afile:
+                    buf = afile.read()
+                    hasher.update(buf)
+                mydict[name]=hasher.hexdigest()
+        print(f"\nHashed files(Sha256) for directory '{dir_name}': \n")        
+        for file,_hash in mydict.items():
+            print(f"{green}{file}{reset}{red} => {reset}{_hash}")
+        
+        with open(f'{final_path}\\{dir_name}-hashed_files.csv', 'w',newline="") as csvfile: 
+            writer = csv.writer(csvfile) 
+            writer.writerow(['FileName', 'Sha256'])    
+            for key, value in mydict.items():
+                writer.writerow([key, value])        
+    
+    
     
     def systeminfo():
         ## run and print systeminfo results
@@ -57,7 +84,6 @@ class Gather():
         print(sysinfo)
         
         ## Write results to file
-        args = str(sysinfo)
         Files.mk_file("SYSTEM-INFO.txt",sysinfo)
         os.remove("psinfo.exe")
         return(sysinfo)
@@ -328,16 +354,16 @@ class IOC():
         iocs = []
         with open(file, "r") as f:
             f = f.read()
-            print("\nIOCs extracted:\n")
+            print(f"{green}\nIOCs extracted:\n{reset}")
             for everything in iocextract.extract_iocs(f):
                 iocs.append(iocextract.defang(everything))
-                print(iocextract.defang(everything))
+                print(f"{red}{iocextract.defang(everything)}{reset}")
         iocs = "\n".join(iocs)
         Files.mk_file("extract_iocs.txt",iocs)
         
     def defang_iocs():
         ioc = input("URL or IP you want to defang: ")
-        print(f"\n{iocextract.defang(ioc)}")
+        print(f"\n{yellow}{iocextract.defang(ioc)}{reset}")
         
       
 class Collect:

@@ -215,6 +215,11 @@ class Hash_term(cmd2.Cmd):
         """Hash any file"""
         Gather.hash_files()  
         
+    @cmd2.with_category(hash_file)    
+    def do_hash_directory(self,args):
+        """Hash all files inside a directory (sha256)"""
+        Gather.hash_directory()      
+        
 class IOC_term(cmd2.Cmd):   
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
