@@ -3,8 +3,9 @@ from data import *
 from file import *
 from scapy.all import sniff
 from scapy.all import wrpcap
+from datetime import date
 import subprocess
-import socket,os,sys
+import socket,os
 import re
 import pydoc
 import time
@@ -23,6 +24,7 @@ hostname = socket.gethostname()
 ntv_folder = Files.name_file("")
 final_path = curdir + "\\Investigations\\" + ntv_folder
 yara_path = f"{curdir}\\Investigations\\yara-rules"
+today = date.today().strftime("%d-%m-%Y")
 
 
 
@@ -332,15 +334,16 @@ class Remediation():
 class Remote():
     def zipfiles():
         filename = f"Investigation-{socket.gethostname()}"
-        shutil.make_archive(f"{filename}", 'zip', f'{os.getcwd()}\\Investigations') 
+        shutil.make_archive(f"{filename}_{today}", 'zip', f'{os.getcwd()}\\Investigations') 
+        print(f"{green}[*] Investigations folder has been zipped succesfully{reset}\n")
+        
         
     def copyfiles():
-        filename = f"Investigation-{socket.gethostname()}.zip"
-        target = input("Which host do you want to copy the files to (IP/hostname): ")
-        subprocess.run(f"""xcopy {filename} \\\\{target}\c$\{filename}" """)
+        filename = f"{os.getcwd()}\\Investigation-{socket.gethostname()}.zip".replace('C:\\','C$')
+        print(f"{green}\\\\ Run the following command to transfer the file to your workstation after you exit psexec session:\nCommand => copy \\\\{socket.gethostname()}\\{filename} C$\ {reset}")
         
     def cleanup():
-        filename = f"Investigation-{socket.gethostname()}.zip"
+        filename = f"Investigation-{socket.gethostname()}_{today}.zip"
         try:
             os.remove(f"{filename}")
         except:

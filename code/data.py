@@ -41,10 +41,14 @@ class Files():
         return(inv_name)
     
     def mk_file(name,*args):
-        filename = Files.name_file(name)
-        f = open(f"Investigations/{Files.name_file('')}/{filename}", "w",newline='')   
-        f.write(*args)
-        f.close()
+        try:
+            filename = Files.name_file(name)
+            f = open(f"Investigations/{Files.name_file('')}/{filename}", "w",newline='')   
+            f.write(*args)
+            f.close()
+        except Exception as e:
+            print(e)
+            
         
 
         

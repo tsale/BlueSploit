@@ -192,11 +192,14 @@ class Remote_term(cmd2.Cmd):
     @cmd2.with_category(housekeeping)
     def do_zip_investigation(self,args):
         """Zipping investigation folder"""
-        Remote.zipfiles()  
+        Remote.zipfiles()
+        
         
     def do_copy2remote(self,args):
-        """Coppying investigation zip file to remote host"""
+        """Coppying and zipying investigation file to remote host"""
+        Remote.zipfiles()
         Remote.copyfiles()
+        
     
     def do_cleanup(self,args):
         """Deleting investigation and files"""
